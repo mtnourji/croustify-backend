@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation email admin</title>
+</head>
+<body>
+
+<h1>Validation d'inscription</h1>
+<h2>Bonjour, </h2>
+
+<p>Voici les informations d'un nouveau compte foodTruckOwner:</p>
+<ul>
+    <li>Nom : <span th:text="${firstname}"></span></li>
+    <li>Prénom : <span th:text="${lastname}"></span></li>
+    <li>Email : <span th:text="${email}"></span></li>
+    <li>Numéro de téléphone : <span th:text="${phone}"></span></li>
+    <li>TVA : <span th:text="${tva}"></span></li>
+    <li>Nom de la société : <span th:text="${companyName}"></span></li>
+</ul>
+
+
+<p>Pour valider ce compte et activer cet utilisateur en tant que FoodTruckOwner, veuillez cliquer sur le bouton ci-dessous :</p>
+
+<div style="text-align: center; margin-top: 20px;">
+    <!-- Bouton de validation -->
+    <a th:href="${validationUrl}"
+       style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; font-size: 16px; border-radius: 5px;">
+        Valider le compte
+    </a>
+</div>
+
+<p>Si vous ne souhaitez pas valider cet utilisateur, aucune action n'est nécessaire.</p>
+
+<p style="margin-top: 40px;">Cordialement,<br>Votre équipe RollingFoods</p>
+</div>
+
+<p>Merci de nous faire confiance !</p>
+<p>L'équipe RollingFoods</p>
+
+</body>
+</html>

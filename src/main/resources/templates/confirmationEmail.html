@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation d'inscription</title>
+</head>
+<body>
+<h2>Bonjour, <span th:text="${firstname}"></span></h2>
+<p>Merci de vous être inscrit en tant que propriétaire de Food Truck !</p>
+<p>Voici les informations que vous avez fournies :</p>
+<ul>
+    <li>Nom : <span th:text="${firstname}"></span></li>
+    <li>Prénom : <span th:text="${lastname}"></span></li>
+    <li>Email : <span th:text="${email}"></span></li>
+    <li>Numéro de téléphone : <span th:text="${phone}"></span></li>
+    <li>TVA : <span th:text="${tva}"></span></li>
+    <li>Nom de la société : <span th:text="${companyName}"></span></li>
+</ul>
+<p>Après vérifiacation de vos informations nous vous enverrons une confirmation d'inscription</p>
+
+<p>Merci de nous faire confiance !</p>
+<p>L'équipe RollingFoods</p>
+
+</body>
+</html>
