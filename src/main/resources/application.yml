@@ -52,6 +52,9 @@ spring:
           ssl:
             trust: "*"
 
+  Recaptcha:
+    secretKey: "6Lfp22gqAAAAAE-H0MJyWAbVFvnhQ9j_VfcUQI-l"
+
   file:
     upload-dir: D:/Projet rollingFoodsApp/pictures
   webflux:
