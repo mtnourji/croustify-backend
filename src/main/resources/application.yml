@@ -10,25 +10,13 @@ spring:
     username: root
     password: ""
     driver-class-name: com.mysql.cj.jdbc.Driver
-  #web:
-    #resources:
-      #static-locations:
-        #- file:///D:/Projet rollingFoodsApp/pictures/foodTruck/
-        #- file:///D:/Projet rollingFoodsApp/pictures/foods/
-
-
-
-
   servlet:
     multipart:
       enabled: true
       max-file-size: 10MB
       max-request-size: 10MB
-
-
-
-
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -70,6 +58,6 @@ spring:
     static-path-pattern: /images/**
 
 static-resources-url: "http://10.0.2.2:8686/images"
-
-
+storage:
+  trucks-image-location: C:\dev\croustify\images\trucks
 
