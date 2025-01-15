@@ -22,6 +22,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
   mail:
+    from: info@croustify.com
+    admin: admin@croustify.com
     username: "76b2f4184357f9"
     password: "be66aa20e36a3e"
     host: "sandbox.smtp.mailtrap.io"

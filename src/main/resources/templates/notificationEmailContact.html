@@ -6,12 +6,14 @@
   <title>Notification Email Contact</title>
     <style>
         .notificationEmail-container {
-            width: auto;
-            height: auto;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
             font-family: Arial, sans-serif;
-
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
-
         .header {
             text-align: center;
         }
@@ -22,15 +24,15 @@
 
         .content {
             margin-top: 20px;
-            text-align: center;
         }
 
         .footer {
             width: auto;
-            height: auto;            m
+            height: auto;
             color: #32464D;
             text-align: center;
             background-color: #FDB514;
+            position: relative;
         }
     </style>
 </head>
@@ -58,21 +60,22 @@
         <p>L'équipe Croustify</p>
     </div>
     <div class="footer">
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
-            <a th:href="@{https://croustify.com}" target="_blank">
-                <img th:src="@{cid:logoCroustify}" alt="Logo de footer" style="width: 40px; height: auto;">
-            </a>
-            <a th:href="@{https://www.example.com}" target="_blank">
-                <img th:src="@{cid:Facebook}" alt="Facebook" style="width: 40px; height: auto;">
-            </a>
-            <a th:href="@{https://www.example.com}" target="_blank">
-                <img th:src="@{cid:Instagram}" alt="Instagram" style="width: 40px; height: auto;">
-            </a>
-            <a th:href="@{https://www.example.com}" target="_blank">
-                <img th:src="@{cid:tiktok}" alt="Tiktok" style="width: 40px; height: auto;">
-            </a>
+        <div style="display: flex; flex-direction: column; align-items: flex-end;padding: 20px">
+            <div style="display: flex; justify-content: left; gap: 10px;">
+                <a th:href="@{https://www.example.com}" target="_blank">
+                    <img th:src="@{cid:Instagram}" alt="Instagram" style="width: 40px; height: auto;">
+                </a>
+                <a th:href="@{https://www.example.com}" target="_blank">
+                    <img th:src="@{cid:tiktok}" alt="Tiktok" style="width: 40px; height: auto;">
+                </a>
+                <a th:href="@{https://www.example.com}" target="_blank">
+                    <img th:src="@{cid:Facebook}" alt="Twitter" style="width: 40px; height: auto;">
+                </a>
+            </div>
+            <p style="margin-top: 10px; font-size: 14px; color: #32464D; text-align: right;">
+                Suivez-nous!
+            </p>
         </div>
-
 
         <p>&copy; 2025 Croustify. Tous droits réservés.</p>
     </div>
