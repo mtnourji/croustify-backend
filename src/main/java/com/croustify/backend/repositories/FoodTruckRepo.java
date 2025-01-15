@@ -15,4 +15,6 @@ public interface FoodTruckRepo extends JpaRepository<FoodTruck, Long>, JpaSpecif
     boolean findStatusById(Long id);
     @Query("SELECT f.foodTruck FROM Favorite f WHERE f.userCredential.id = :userCredentialId")
     List<FoodTruck> findAllMyFavorites(@Param("userCredentialId") Long userCredentialId);
+
+    List<FoodTruck> findByFoodTruckOwnerUserCredentialId(long userId);
 }

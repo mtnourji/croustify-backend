@@ -29,6 +29,14 @@ public class FoodTruckController {
     @Autowired
     private TruckService truckService;
 
+
+    @OwnUser
+    @PreAuthorize("hasRole('ROLE_FOOD_TRUCK_OWNER')")
+    @GetMapping("/users/{userId}/foodTrucks")
+    public ResponseEntity<List<FoodTruckDTO>> getOwnerFoodTrucks(@PathVariable(name = "userId") long userId) {
+        return ResponseEntity.ok(truckService.getOwnerTrucks(userId));
+    }
+
     @GetMapping("/foodTrucks")
     public ResponseEntity<List<FoodTruckDTO>> getFoodTrucks(@RequestParam(name = "onlyFavorites", required = false, defaultValue = "false") boolean onlyFavorites) {
         return ResponseEntity.ok(truckService.getTrucks(onlyFavorites));

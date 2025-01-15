@@ -28,4 +28,6 @@ public interface TruckService {
     public FoodTruckDTO closeTruck(Long truckId);
     public boolean findStatusById(Long id);
     public String uploadProfileImage(MultipartFile file, Long truckId) throws IOException;
+
+    List<FoodTruckDTO> getOwnerTrucks(long userId);
 }

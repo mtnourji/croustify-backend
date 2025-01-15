@@ -66,6 +66,13 @@ public class TruckServiceImp implements TruckService {
         return trucks.stream().map(mapper::foodTruckToDto).collect(Collectors.toList());
     }
 
+    @Transactional
+    @Override
+    public List<FoodTruckDTO> getOwnerTrucks(long userId) {
+        final List<FoodTruck> foodTrucks = foodTruckRepo.findByFoodTruckOwnerUserCredentialId(userId);
+        return foodTrucks.stream().map(mapper::foodTruckToDto).collect(Collectors.toList());
+    }
+
     @Override
     public FoodTruckDTO createTruck(final FoodTruckDTO foodTruckDTO, final Long userId, final MultipartFile file) throws IOException, java.io.IOException {
         final FoodTruckOwner foodTruckOwner = foodTruckOwnerRepo.getReferenceByUserCredentialId(userId).orElseThrow(() -> new EntityNotFoundException("Food truck owner not found with user id: " + userId));
