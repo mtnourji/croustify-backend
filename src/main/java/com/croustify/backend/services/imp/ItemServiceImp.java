@@ -2,12 +2,11 @@ package com.croustify.backend.services.imp;
 
 import com.croustify.backend.dto.ItemDTO;
 import com.croustify.backend.enums.ItemCategorie;
-import com.croustify.backend.repositories.CategorieRepo;
-import com.croustify.backend.repositories.FoodTruckRepo;
-import com.croustify.backend.repositories.ItemRepo;
 import com.croustify.backend.mappers.ItemMapper;
 import com.croustify.backend.models.FoodTruck;
 import com.croustify.backend.models.Item;
+import com.croustify.backend.repositories.FoodTruckRepo;
+import com.croustify.backend.repositories.ItemRepo;
 import com.croustify.backend.services.ItemService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImp implements ItemService {
-
     @Value("D://Projet rollingFoodsApp/pictures/foods")
     private String foodItemsPicturesLocation;
 
@@ -39,9 +37,6 @@ public class ItemServiceImp implements ItemService {
 
     @Autowired
     private ItemMapper mapper;
-
-    @Autowired
-    private CategorieRepo categorieRepo;
 
     @Autowired
     private FoodTruckRepo foodTruckRepo;

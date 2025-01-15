@@ -1,7 +1,6 @@
 package com.croustify.backend.controllers;
 
 import com.croustify.backend.dto.FoodTruckDTO;
-import com.croustify.backend.enums.FoodType;
 import com.croustify.backend.services.TruckService;
 import com.croustify.backend.validation.OwnUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +32,16 @@ public class FoodTruckController {
     @GetMapping("/foodTrucks")
     public ResponseEntity<List<FoodTruckDTO>> getFoodTrucks(@RequestParam(name = "onlyFavorites", required = false, defaultValue = "false") boolean onlyFavorites) {
         return ResponseEntity.ok(truckService.getTrucks(onlyFavorites));
+    }
+
+    @GetMapping("/foodTrucks/search")
+    public ResponseEntity<List<FoodTruckDTO>> searchFoodTrucks(
+            @RequestParam(required = false) Boolean isOpen,
+            @RequestParam(required = false) List<Long> categoryIds,
+            @RequestParam(required = false) Boolean onlyFavorites
+    ) {
+        List<FoodTruckDTO> foodTrucks = truckService.searchFoodTrucks(isOpen, categoryIds, onlyFavorites);
+        return ResponseEntity.ok(foodTrucks);
     }
 
     // Get food truck by id
@@ -143,28 +152,5 @@ public class FoodTruckController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
-    // Find food truck by food type
-    @GetMapping("/foodTruckByFoodType")
-    public ResponseEntity<List<FoodTruckDTO>> getFoodTruckByFoodType(@RequestParam("foodType") String foodType) {
-       try{
-           FoodType type = FoodType.valueOf(foodType.toUpperCase().replace(" ","_"));
-           List<FoodTruckDTO> foodTrucks = truckService.findByFoodType(type);
-           return new ResponseEntity<>(foodTrucks,HttpStatus.OK);
-       }catch (IllegalArgumentException e){
-           return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-       }
-
-
-    }
-
-    // Find food truck by name and food type and description
-    @GetMapping("/searchFoodTrucks")
-    public ResponseEntity<List<FoodTruckDTO>> getFoodTruckByNameAndFoodTypeAndDescription(@RequestParam("searchTerm") String searchTerm) {
-        return ResponseEntity.ok(truckService.findByNameAndFoodTypeAndDescription(searchTerm));
-    }
-
-
-
 }
 

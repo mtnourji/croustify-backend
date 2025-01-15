@@ -1,14 +1,16 @@
 package com.croustify.backend.services.imp;
 
+import com.croustify.backend.dto.CategoryDTO;
 import com.croustify.backend.dto.FoodTruckDTO;
-import com.croustify.backend.enums.FoodType;
-import com.croustify.backend.repositories.FoodTruckOwnerRepo;
-import com.croustify.backend.repositories.FoodTruckRepo;
-import com.croustify.backend.repositories.UserCredentialRepo;
 import com.croustify.backend.mappers.FoodTruckMapper;
 import com.croustify.backend.models.FoodTruck;
 import com.croustify.backend.models.FoodTruckOwner;
+import com.croustify.backend.repositories.CategoryRepository;
+import com.croustify.backend.repositories.FoodTruckOwnerRepo;
+import com.croustify.backend.repositories.FoodTruckRepo;
+import com.croustify.backend.repositories.UserCredentialRepo;
 import com.croustify.backend.services.TruckService;
+import com.croustify.backend.specifications.FoodTruckSpecifications;
 import com.croustify.backend.util.SecurityUtil;
 import io.jsonwebtoken.io.IOException;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,16 +18,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +46,8 @@ public class TruckServiceImp implements TruckService {
 
     @Autowired
     private FoodTruckOwnerRepo foodTruckOwnerRepo;
-
+    @Autowired
+    private CategoryRepository categoryRepository;
     @Autowired
     private FoodTruckRepo foodTruckRepo;
 
@@ -69,7 +73,9 @@ public class TruckServiceImp implements TruckService {
         foodTruck.setName(foodTruckDTO.getName());
         foodTruck.setDescription(foodTruckDTO.getDescription());
         foodTruck.setSpeciality(foodTruckDTO.getSpeciality());
-        foodTruck.setFoodType(foodTruckDTO.getFoodType());
+        if(!foodTruckDTO.getCategories().isEmpty()) {
+            foodTruck.setCategories(new HashSet<>(categoryRepository.findAllById(foodTruckDTO.getCategories().stream().map(CategoryDTO::getId).toList())));
+        }
         foodTruck.setCoordinates(foodTruckDTO.getCoordinates());
         foodTruck.setFoodTruckOwner(foodTruckOwner);
 
@@ -77,32 +83,40 @@ public class TruckServiceImp implements TruckService {
 
         if(file != null && !file.isEmpty()) {
             String imageUrl = uploadProfileImage(file, savedFoodTruck.getId());
-
             savedFoodTruck.setProfileImage(imageUrl);
-
             foodTruckRepo.save(savedFoodTruck);
-
-
-
         }
 
         return mapper.foodTruckToDto(savedFoodTruck);
     }
 
-
-    //Find truck by id
     @Override
     public FoodTruckDTO findTruckById(Long id) {
         final FoodTruck truck = getTruckById((long) id);
         return mapper.foodTruckToDto(truck);
     }
 
-    // Get food truck by id
-
     private FoodTruck getTruckById(Long id) {
         return foodTruckRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("Truck not found with id: " + id));
     }
 
+    @Transactional
+    @Override
+    public List<FoodTruckDTO> searchFoodTrucks(Boolean isOpen, List<Long> categoryIds, Boolean onlyFavorites) {
+        Specification<FoodTruck> spec = Specification.where(null);
+        if (isOpen != null) {
+            spec = spec.and(FoodTruckSpecifications.isOpen(isOpen));
+        }
+        if (categoryIds != null && !categoryIds.isEmpty()) {
+            spec = spec.and(FoodTruckSpecifications.hasCategories(categoryIds));
+        }
+        if (Boolean.TRUE.equals(onlyFavorites)) {
+            Long userCredentialId = SecurityUtil.getConnectedUserOrThrow().getId();
+            spec = spec.and(FoodTruckSpecifications.isFavoriteForUser(userCredentialId));
+        }
+
+        return mapper.foodTruckToDto(foodTruckRepo.findAll(spec));
+    }
 
 
     //update truck
@@ -119,8 +133,9 @@ public class TruckServiceImp implements TruckService {
         if (foodTruckDTO.getSpeciality() != null) {
             truck.setSpeciality(foodTruckDTO.getSpeciality());
         }
-        if (foodTruckDTO.getFoodType() != null) {
-            truck.setFoodType(foodTruckDTO.getFoodType());
+        truck.getCategories().clear();
+        if(!foodTruckDTO.getCategories().isEmpty()){
+            truck.setCategories(new HashSet<>(categoryRepository.findAllById(foodTruckDTO.getCategories().stream().map(CategoryDTO::getId).toList())));
         }
         if (foodTruckDTO.getProfileImage() != null) {
             truck.setProfileImage(foodTruckDTO.getProfileImage());
@@ -221,20 +236,6 @@ public class TruckServiceImp implements TruckService {
 
         }
 
-    }
-
-    //Find truck by food type
-    @Override
-    public List<FoodTruckDTO> findByFoodType(FoodType foodType) {
-        final List<FoodTruck> trucks = foodTruckRepo.findByFoodType(foodType);
-        return trucks.stream().map(mapper::foodTruckToDto).collect(Collectors.toList());
-    }
-
-    //Find truck by name and food type and description
-    @Override
-    public List<FoodTruckDTO> findByNameAndFoodTypeAndDescription(String searchTerm) {
-        final List<FoodTruck> trucks = foodTruckRepo.findByNameAndFoodTypeAndDescription(searchTerm);
-        return trucks.stream().map(mapper::foodTruckToDto).collect(Collectors.toList());
     }
 }
 

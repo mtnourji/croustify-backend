@@ -1,6 +1,5 @@
 package com.croustify.backend.dto;
 
-import com.croustify.backend.enums.FoodType;
 import com.croustify.backend.models.embedded.Coordinates;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ public class FoodTruckDTO {
     private String description;
     private String speciality;
     private Coordinates coordinates;
-    private List<FoodType> foodType = new ArrayList<>();
+    private List<CategoryDTO> categories = new ArrayList<>();
     private String profileImage;
     private int rating;
     private int ratingCount;
@@ -84,14 +83,6 @@ public class FoodTruckDTO {
         this.speciality = speciality;
     }
 
-    public List<FoodType> getFoodType() {
-        return foodType;
-    }
-
-    public void setFoodType(List<FoodType> foodType) {
-        this.foodType = foodType;
-    }
-
     public String getProfileImage() {
         return profileImage;
     }
@@ -124,5 +115,12 @@ public class FoodTruckDTO {
         this.isOpen = isOpen;
     }
 
+    public List<CategoryDTO> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<CategoryDTO> categories) {
+        this.categories = categories;
+    }
 }
 

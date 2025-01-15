@@ -1,7 +1,6 @@
 package com.croustify.backend.services.imp;
 
 import com.croustify.backend.component.JwtTokenProvider;
-import com.croustify.backend.controllers.CategorieController;
 import com.croustify.backend.dto.UserCredentialDTO;
 import com.croustify.backend.mappers.UserCredentialMapper;
 import com.croustify.backend.models.Role;
@@ -29,7 +28,7 @@ import java.util.Set;
 @Service
 public class UserServiceImp implements UserService {
 
-    private static final Logger logger =  LoggerFactory.getLogger(CategorieController.class);
+    private static final Logger logger =  LoggerFactory.getLogger(UserServiceImp.class);
 
     @Autowired
     private UserCredentialRepo userCredentialRepo;

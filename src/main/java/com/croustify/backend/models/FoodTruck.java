@@ -20,11 +20,15 @@ public class FoodTruck {
     private Long id;
     private String name;
     private String description;
-    @ElementCollection(targetClass = FoodType.class)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "food_truck_food_types", joinColumns = @JoinColumn(name = "food_truck_id"))
-    @Column(name = "food_type")
-    private List<FoodType> foodType = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "food_truck_category",
+            joinColumns = @JoinColumn(name = "food_truck_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories = new HashSet<>();
+
     private String speciality;
     private String profileImage;
     private Coordinates coordinates;
@@ -51,32 +55,6 @@ public class FoodTruck {
     //Relation OneToMany avec Picture car un foodTruck peut contenir plusieurs images
     @OneToMany(mappedBy = "foodTruck", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Picture> pictures = new ArrayList<>();
-
-
-
-
-    public FoodTruck() {
-    }
-
-
-    public FoodTruck(Long id, String name, String description, List<FoodType> foodType, String speciality, String profileImage, Coordinates coordinates, Float length, Float width, Boolean isOpen, int rating, int ratingCount, LocalDate createdDate, FoodTruckOwner foodTruckOwner, Set<Menu> menus, List<Picture> pictures) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.foodType = foodType;
-        this.speciality = speciality;
-        this.profileImage = profileImage;
-        this.coordinates = coordinates;
-        this.length = length;
-        this.width = width;
-        this.isOpen = isOpen;
-        this.rating = rating;
-        this.ratingCount = ratingCount;
-        this.createdDate = createdDate;
-        this.foodTruckOwner = foodTruckOwner;
-        this.menus = menus;
-        this.pictures = pictures;
-    }
 
     public Long getId() {
         return id;
@@ -158,14 +136,6 @@ public class FoodTruck {
         this.coordinates = coordinates;
     }
 
-    public List<FoodType> getFoodType() {
-        return foodType;
-    }
-
-    public void setFoodType(List<FoodType> foodType) {
-        this.foodType = foodType;
-    }
-
     public String getSpeciality() {
         return speciality;
     }
@@ -206,4 +176,11 @@ public class FoodTruck {
         this.ratingCount = ratingCount;
     }
 
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
+    }
 }

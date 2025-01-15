@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:8686")
 @RestController
 public class FoodTruckOwnerController {
-
-    private static final Logger logger =  LoggerFactory.getLogger(CategorieController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FoodTruckOwnerController.class);
 
     // Injecting the FoodTruckOwnerService
     @Autowired
