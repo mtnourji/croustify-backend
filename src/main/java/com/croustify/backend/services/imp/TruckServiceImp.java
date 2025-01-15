@@ -69,6 +69,11 @@ public class TruckServiceImp implements TruckService {
     @Override
     public FoodTruckDTO createTruck(final FoodTruckDTO foodTruckDTO, final Long userId, final MultipartFile file) throws IOException, java.io.IOException {
         final FoodTruckOwner foodTruckOwner = foodTruckOwnerRepo.getReferenceByUserCredentialId(userId).orElseThrow(() -> new EntityNotFoundException("Food truck owner not found with user id: " + userId));
+
+        if(foodTruckOwner.getFoodTrucks().size() >= foodTruckOwner.getNumberOfAllowedFoodTrucks()){
+            throw new IllegalArgumentException("Number of maximum food trucks reached for user " + userId);
+        }
+
         FoodTruck foodTruck = new FoodTruck();
         foodTruck.setName(foodTruckDTO.getName());
         foodTruck.setDescription(foodTruckDTO.getDescription());

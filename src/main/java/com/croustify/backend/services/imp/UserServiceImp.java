@@ -2,9 +2,12 @@ package com.croustify.backend.services.imp;
 
 import com.croustify.backend.component.JwtTokenProvider;
 import com.croustify.backend.dto.UserCredentialDTO;
+import com.croustify.backend.dto.UserLoginDTO;
 import com.croustify.backend.mappers.UserCredentialMapper;
+import com.croustify.backend.models.PasswordResetToken;
 import com.croustify.backend.models.Role;
 import com.croustify.backend.models.UserCredential;
+import com.croustify.backend.repositories.PasswordResetTokenRepository;
 import com.croustify.backend.repositories.RoleRepo;
 import com.croustify.backend.repositories.UserCredentialRepo;
 import com.croustify.backend.services.UserService;
@@ -18,6 +21,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -38,6 +42,8 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private RoleRepo roleRepo;
+    @Autowired
+    private PasswordResetTokenRepository tokenRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -49,14 +55,13 @@ public class UserServiceImp implements UserService {
     public UserServiceImp(PasswordEncoder passwordEncoder) {
     }
 
-
-    //Register user method
     @Override
-    public void registerUser(UserCredentialDTO userCredentialDTO) {
+    public void registerUser(UserLoginDTO userCredentialDTO) {
         if(userCredentialDTO.getPassword() ==  null || userCredentialDTO.getPassword().isEmpty()){
             throw new RuntimeException("Password is required");
         }else{
             UserCredential user = mapperUser.dtoToUser(userCredentialDTO);
+            user.setUsername(user.getEmail());
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             Set<Role> roles = new HashSet<>();
             roles.add(roleRepo.findByName("ROLE_USER"));
@@ -64,12 +69,11 @@ public class UserServiceImp implements UserService {
             userCredentialRepo.save(user);
         }
     }
-    //Sign in method
     @Override
-    public String signIn(UserCredentialDTO userCredentialDTO) {
+    public String signIn(UserLoginDTO userLogin) {
 
             try {
-                UserCredential user = userCredentialRepo.findByEmail(userCredentialDTO.getEmail());
+                UserCredential user = userCredentialRepo.findByEmail(userLogin.getEmail());
                 if (user == null) {
                     throw new UsernameNotFoundException("User not found");
                 }
@@ -77,7 +81,7 @@ public class UserServiceImp implements UserService {
                 if("GOOGLE".equals(user.getAuthProvider())){
                     logger.info("User {} has signed in with Google", user.getUsername());
                 }else{
-                    if (!passwordEncoder.matches(userCredentialDTO.getPassword(), user.getPassword())) {
+                    if (!passwordEncoder.matches(userLogin.getPassword(), user.getPassword())) {
                         throw new BadCredentialsException("Invalid password");
                     }
                 }
@@ -90,6 +94,26 @@ public class UserServiceImp implements UserService {
                 throw new RuntimeException("Error: " + e.getMessage());
             }
 
+    }
+
+    @Transactional
+    @Override
+    public void resetPassword(String token, String newPassword){
+        final PasswordResetToken resetToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid or expired token"));
+
+        if (!resetToken.isValid()) {
+            throw new IllegalArgumentException("Token has expired or reached its max clicks.");
+        }
+
+        resetToken.incrementClickCount();
+        tokenRepository.save(resetToken);
+
+        UserCredential owner = resetToken.getUser();
+        owner.setPassword(passwordEncoder.encode(newPassword));
+        owner.setEnabled(true);
+        tokenRepository.save(resetToken);
+        userCredentialRepo.save(owner);
     }
 
     @Override

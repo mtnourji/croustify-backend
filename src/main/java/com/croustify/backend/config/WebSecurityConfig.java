@@ -40,6 +40,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
                         .requestMatchers(HttpMethod.GET, "/contact").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/reset-password").permitAll()
                         .requestMatchers(HttpMethod.POST, "/signIn").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/deleteAccount").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/updatePassword").permitAll()

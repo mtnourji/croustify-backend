@@ -2,7 +2,9 @@ package com.croustify.backend.controllers;
 
 
 import com.croustify.backend.dto.LoginResponse;
+import com.croustify.backend.dto.ResetPasswordDTO;
 import com.croustify.backend.dto.UserCredentialDTO;
+import com.croustify.backend.dto.UserLoginDTO;
 import com.croustify.backend.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,32 +18,34 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
-@CrossOrigin(origins = "http://localhost:8686")
 @RestController
 public class UserController {
-
     private static final Logger logger =  LoggerFactory.getLogger(UserController.class);
 
-    // Injecting the UserService
     @Autowired
     private UserService userService;
 
     @PostMapping("/register")
-    ResponseEntity<Void> registerUser(@RequestBody @Validated UserCredentialDTO userCredentialDTO) {
-        logger.info("Registering User: {}", userCredentialDTO);
+    ResponseEntity<Void> registerUser(@RequestBody @Validated UserLoginDTO userCredentialDTO) {
+        logger.info("Registering User: {}", userCredentialDTO.getEmail());
         userService.registerUser(userCredentialDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordDTO resetPasswordDTO) {
+        userService.resetPassword(resetPasswordDTO.getToken(), resetPasswordDTO.getPassword());
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/signIn")
-    ResponseEntity<LoginResponse> signIn(@RequestBody @Validated UserCredentialDTO userCredentialDTO) {
-        logger.info("Signing In User: {}", userCredentialDTO);
+    ResponseEntity<LoginResponse> signIn(@RequestBody @Validated UserLoginDTO userLogin) {
+        logger.info("Signing In User: {}", userLogin.getEmail());
         try {
-            String signIn = userService.signIn(userCredentialDTO);
-            logger.info("User Signed In: {}", signIn);
-            return ResponseEntity.ok(new LoginResponse(signIn));
+            String token = userService.signIn(userLogin);
+            return ResponseEntity.ok(new LoginResponse(token));
         } catch (BadCredentialsException e) {
-            logger.error("Invalid credentials: {}", userCredentialDTO);
+            logger.info("Invalid credentials: {}", userLogin.getEmail());
             throw new BadCredentialsException("Invalid email or password");
         }
     }

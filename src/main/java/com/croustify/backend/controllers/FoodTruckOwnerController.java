@@ -1,6 +1,7 @@
 package com.croustify.backend.controllers;
 
 import com.croustify.backend.dto.FoodTruckOwnerDTO;
+import com.croustify.backend.dto.NewFoodTruckOwnerDTO;
 import com.croustify.backend.dto.UserCredentialDTO;
 import com.croustify.backend.repositories.UserCredentialRepo;
 import com.croustify.backend.models.UserCredential;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,12 +31,13 @@ public class FoodTruckOwnerController {
     @Autowired
     private UserCredentialRepo userCredentialRepo;
 
-    // Registering the FoodTruckOwner
-    @PostMapping("/registerFoodTruckOwner")
-     ResponseEntity<UserCredentialDTO> registerFoodTruckOwner(@RequestBody @Validated UserCredentialDTO UserCredentialDTO) {
-        logger.info("Registering FoodTruckOwner: {}", UserCredentialDTO);
-        UserCredentialDTO registerFoodTruckOwner = foodTruckOwnerService.registerFoodTruckUser(UserCredentialDTO);
-        return ResponseEntity.ok(registerFoodTruckOwner);
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/foodTruckOwners")
+     ResponseEntity<Void> registerFoodTruckOwner(@RequestBody @Validated NewFoodTruckOwnerDTO owner) {
+        logger.info("Registering FoodTruckOwner: {} {}", owner.getEmail(), owner.getCompanyName());
+        foodTruckOwnerService.createFoodTruckOwner(owner);
+        // TODO at least return id
+        return ResponseEntity.noContent().build();
     }
 
     // add a food truck owner to the database

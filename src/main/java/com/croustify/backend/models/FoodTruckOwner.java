@@ -19,6 +19,7 @@ public class FoodTruckOwner extends User {
     private String tva;
     @Column(name = "bank_number")
     private String bankNumber;
+    private int numberOfAllowedFoodTrucks;
 
 
 
@@ -86,4 +87,11 @@ public class FoodTruckOwner extends User {
     }
 
 
+    public int getNumberOfAllowedFoodTrucks() {
+        return numberOfAllowedFoodTrucks;
+    }
+
+    public void setNumberOfAllowedFoodTrucks(int numberOfAllowedFoodTrucks) {
+        this.numberOfAllowedFoodTrucks = numberOfAllowedFoodTrucks;
+    }
 }

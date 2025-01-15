@@ -51,7 +51,7 @@ public class GoogleAuthController {
             }
 
             UserCredential userCredentialExist = userCredentialRepo.findByEmail(payload.getEmail());
-
+/*
             if (userCredentialExist != null) {
                 String jwtTokenGoogle = userService.signIn(userCredentialMapper.userToDto(userCredentialExist));
                 return ResponseEntity.ok(jwtTokenGoogle);
@@ -77,8 +77,8 @@ public class GoogleAuthController {
 
 
                 String jwtTokenGoogle = userService.signIn(userCredentialDTO);
-
-                return ResponseEntity.ok(jwtTokenGoogle);
+*/
+                return ResponseEntity.noContent().build();
 
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());

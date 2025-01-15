@@ -2,6 +2,7 @@ package com.croustify.backend.mappers;
 
 
 import com.croustify.backend.dto.FoodTruckOwnerDTO;
+import com.croustify.backend.dto.NewFoodTruckOwnerDTO;
 import com.croustify.backend.models.FoodTruckOwner;
 import org.mapstruct.Mapper;
 
@@ -13,4 +14,5 @@ public interface FoodTruckOwnerMapper {
     FoodTruckOwnerDTO foodTruckOwnerToDto(FoodTruckOwner foodTruckOwner);
 
 
+    FoodTruckOwner newFoodTruckOwnerToModel(NewFoodTruckOwnerDTO foodTruckOwnerRequest);
 }
