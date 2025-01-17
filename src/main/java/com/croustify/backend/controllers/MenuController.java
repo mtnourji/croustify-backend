@@ -1,47 +1,40 @@
 package com.croustify.backend.controllers;
 
 
+import com.croustify.backend.dto.MenuCreationDTO;
 import com.croustify.backend.dto.MenuDTO;
 import com.croustify.backend.services.MenuService;
+import com.croustify.backend.validation.OwnFoodTruck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:8686")
 @RestController
-@RequestMapping("/menu")
 public class MenuController {
 
-    // Injecting the MenuService
     @Autowired
     private MenuService menuService;
 
-    // Get all menus
-    @GetMapping("/menus")
-    public ResponseEntity <List<MenuDTO>> getMenus() {
-        return ResponseEntity.ok(menuService.getAllMenus());
-    }
-    // Get menu by id
     @GetMapping("/menus/{id}")
     public ResponseEntity <MenuDTO> getMenuById(@PathVariable("id")  Long id) {
         return ResponseEntity.ok(menuService.getMenuById(id));
     }
-    // Create menu
-    @PostMapping("/menus")
-    public ResponseEntity <MenuDTO> createMenu(@RequestBody MenuDTO menuDTO) {
-        return ResponseEntity.ok(menuService.createMenu(menuDTO));
-    }
-    // Get menu by truck id
 
-    /*
-    @GetMapping("/menus/truck/{foodTruckId}")
-    public MenuDTO getMenusByTruckId(@PathVariable("foodTruckId") Long foodTruckId) {
-        return menuService.getMenusByTruckId(foodTruckId);
+
+    @OwnFoodTruck
+    @Secured("ROLE_FOOD_TRUCK_OWNER")
+    @PostMapping("/foodTrucks/{foodTruckId}/menus")
+    public ResponseEntity <MenuDTO> createMenu(@PathVariable("foodTruckId") Long foodTruckId, @RequestBody MenuCreationDTO menuDTO) {
+        return ResponseEntity.ok(menuService.createMenu(foodTruckId, menuDTO));
     }
 
-     */
+    @GetMapping("/foodTrucks/{foodTruckId}/menus")
+    public List<MenuDTO> getMenusByTruckId(@PathVariable("foodTruckId") Long foodTruckId) {
+        return menuService.getFoodTruckMenus(foodTruckId);
+    }
 }
 
 
