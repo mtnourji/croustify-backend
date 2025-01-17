@@ -1,17 +1,10 @@
-
 package com.croustify.backend.dto;
 
-import java.util.Set;
-
-public class CategorieDTO {
+public class MenuCategoryDTO {
 
     private Long id;
     private String name;
     private String description;
-    private Set<MenuDTO> menus;
-
-    public CategorieDTO() {
-    }
 
     public Long getId() {
         return id;
@@ -36,13 +29,4 @@ public class CategorieDTO {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public Set<MenuDTO> getMenus() {
-        return menus;
-    }
-
-    public void setMenus(Set<MenuDTO> menus) {
-        this.menus = menus;
-    }
 }
-

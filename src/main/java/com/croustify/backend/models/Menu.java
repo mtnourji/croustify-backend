@@ -2,7 +2,6 @@ package com.croustify.backend.models;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -18,31 +17,18 @@ public class Menu {
     private Long id;
     private String name;
 
-    //Relation ManyToOne avec FoodTruck car un menu appartient à un foodTruck
     @ManyToOne
     @JoinColumn(name = "id_food_truck")
     @JsonBackReference
     private FoodTruck foodTruck;
 
-
-    //Relation ManyToMany avec Categorie car un menu peut contenir plusieurs catégories
     @ManyToMany
     @JoinTable(
             name = "menu_categorie",
             joinColumns = @JoinColumn(name = "id_menu"),
             inverseJoinColumns = @JoinColumn(name = "id_categorie")
     )
-    @JsonManagedReference
-    private Set<Categorie> categories = new HashSet<>();
-
-    public Menu() {
-    }
-
-    public Menu(Long id, FoodTruck foodTruck) {
-        this.id = id;
-        this.foodTruck = foodTruck;
-
-    }
+    private Set<MenuCategory> menuCategories = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -50,6 +36,14 @@ public class Menu {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public FoodTruck getFoodTruck() {
@@ -60,19 +54,11 @@ public class Menu {
         this.foodTruck = foodTruck;
     }
 
-    public Set<Categorie> getCategories() {
-        return categories;
+    public Set<MenuCategory> getMenuCategories() {
+        return menuCategories;
     }
 
-    public void setCategories(Set<Categorie> categories) {
-        this.categories = categories;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setMenuCategories(Set<MenuCategory> menuCategories) {
+        this.menuCategories = menuCategories;
     }
 }

@@ -7,7 +7,7 @@ public class MenuDTO {
     private Long id;
     private String name;
     private String description;
-    private Set<CategorieDTO> categories;
+    private Set<MenuCategoryDTO> categories;
 
     public MenuDTO() {
     }
@@ -36,11 +36,11 @@ public class MenuDTO {
         this.description = description;
     }
 
-    public Set<CategorieDTO> getCategories() {
+    public Set<MenuCategoryDTO> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<CategorieDTO> categories) {
+    public void setCategories(Set<MenuCategoryDTO> categories) {
         this.categories = categories;
     }
 }

@@ -1,7 +1,7 @@
 package com.croustify.backend.services;
 
 import com.croustify.backend.dto.CategoryDTO;
-import com.croustify.backend.mappers.CategorieMapper;
+import com.croustify.backend.mappers.CategoryMapper;
 import com.croustify.backend.models.Category;
 import com.croustify.backend.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +12,10 @@ import java.util.List;
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
-    private final CategorieMapper categoryMapper;
+    private final CategoryMapper categoryMapper;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository, CategorieMapper categoryMapper) {
+    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
     }

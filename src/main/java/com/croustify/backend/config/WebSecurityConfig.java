@@ -11,17 +11,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableMethodSecurity
 @EnableWebSecurity
+@EnableMethodSecurity(
+        securedEnabled = true,
+        jsr250Enabled = true)
 public class WebSecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -30,7 +29,6 @@ public class WebSecurityConfig {
         this.jwtAuthFilter = jwtAuthFilter;
     }
 
-    // TODO Remove some permitall
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -46,28 +44,16 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/updatePassword").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                         .requestMatchers(HttpMethod.GET, "/google-certificates").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/registerFoodTruckOwner").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/addFoodTruck").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/categories").permitAll()
                         .requestMatchers(HttpMethod.GET, "/foodTruck").permitAll()
                         .requestMatchers(HttpMethod.GET, "/foodTruck/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/findFoodTruckOwnerIdByUserCredentialId").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/foodTruckByOwnerId").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/updateFoodTruck").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/deleteFoodTruck").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/isFoodTruckOwner").permitAll()
                         .requestMatchers(HttpMethod.GET, "/validateAccount").permitAll()
                         .requestMatchers(HttpMethod.POST, "/items").permitAll()
                         .requestMatchers(HttpMethod.GET, "/items/foodTruck").permitAll()
                         .requestMatchers(HttpMethod.GET, "/items/category").permitAll()
                         .requestMatchers(HttpMethod.GET, "/items/foodTruckAndCategory").permitAll()
                         .requestMatchers(HttpMethod.GET, "/items/{id}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/items/{id}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/items/{id}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/rateFoodTruck").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/openFoodTruck").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/closeFoodTruck").permitAll()
                         .requestMatchers(HttpMethod.GET, "/isFoodTruckOpen").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/uploadImage").permitAll()
                         .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/foodTruckByFoodType").permitAll()
                         .requestMatchers(HttpMethod.GET, "/searchFoodTrucks").permitAll()
