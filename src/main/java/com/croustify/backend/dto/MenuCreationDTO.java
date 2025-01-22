@@ -1,25 +1,17 @@
 package com.croustify.backend.dto;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
-public class MenuDTO {
+public class MenuCreationDTO {
 
-    private Long id;
     private String name;
     private String description;
     private BigDecimal priceTtc;
-    private Set<MenuCategoryDTO> categories;
+    private Set<Long> categories = new HashSet<>();
 
-    public MenuDTO() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public MenuCreationDTO() {
     }
 
     public String getName() {
@@ -38,11 +30,11 @@ public class MenuDTO {
         this.description = description;
     }
 
-    public Set<MenuCategoryDTO> getCategories() {
+    public Set<Long> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<MenuCategoryDTO> categories) {
+    public void setCategories(Set<Long> categories) {
         this.categories = categories;
     }
 

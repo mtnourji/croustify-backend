@@ -4,6 +4,7 @@ package com.croustify.backend.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +17,9 @@ public class Menu {
     @Column(name = "id_menu")
     private Long id;
     private String name;
+    private String description;
 
+    private BigDecimal priceTtc;
     @ManyToOne
     @JoinColumn(name = "id_food_truck")
     @JsonBackReference
@@ -24,9 +27,9 @@ public class Menu {
 
     @ManyToMany
     @JoinTable(
-            name = "menu_categorie",
-            joinColumns = @JoinColumn(name = "id_menu"),
-            inverseJoinColumns = @JoinColumn(name = "id_categorie")
+            name = "menu_menu_category",
+            joinColumns = @JoinColumn(name = "menu_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<MenuCategory> menuCategories = new HashSet<>();
 
@@ -60,5 +63,21 @@ public class Menu {
 
     public void setMenuCategories(Set<MenuCategory> menuCategories) {
         this.menuCategories = menuCategories;
+    }
+
+    public BigDecimal getPriceTtc() {
+        return priceTtc;
+    }
+
+    public void setPriceTtc(BigDecimal priceTtc) {
+        this.priceTtc = priceTtc;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
