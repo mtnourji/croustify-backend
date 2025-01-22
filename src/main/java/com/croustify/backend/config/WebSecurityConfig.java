@@ -36,7 +36,6 @@ public class WebSecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/contact").permitAll()
                         .requestMatchers(HttpMethod.POST, "/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/reset-password").permitAll()
                         .requestMatchers(HttpMethod.POST, "/signIn").permitAll()
@@ -48,8 +47,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/foodTrucks/*/menus").permitAll()
                         .requestMatchers(HttpMethod.GET, "/menus").permitAll()
                         .requestMatchers(HttpMethod.GET, "/menus/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/foodTruck").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/foodTruck/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/foodTrucks").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/foodTrucks/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/validateAccount").permitAll()
                         .requestMatchers(HttpMethod.POST, "/items").permitAll()
                         .requestMatchers(HttpMethod.GET, "/items/foodTruck").permitAll()

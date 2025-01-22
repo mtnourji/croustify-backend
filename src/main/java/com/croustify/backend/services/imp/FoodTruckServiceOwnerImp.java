@@ -87,29 +87,6 @@ public class FoodTruckServiceOwnerImp implements FoodTruckOwnerService {
         // TODO SEND MAIL sendResetLink(foodTruckOwner.getEmail(), token.getToken());
     }
 
-
-    // add a food truck owner to the database
-    @Override
-    public FoodTruckOwnerDTO addFoodTruckOwner(Long userCredentialId, FoodTruckOwnerDTO foodTruckOwnerDTO) {
-        UserCredential userCredential = userCredentialRepo.findById(userCredentialId).orElseThrow(() -> new RuntimeException("User not found with id: " + userCredentialId));
-        //Convert AddressDTO to Address
-        Address address = addressMapper.dtoToAddress(foodTruckOwnerDTO.getAddress());
-
-        FoodTruckOwner foodTruckOwner = new FoodTruckOwner();
-        foodTruckOwner.setFirstname(foodTruckOwnerDTO.getFirstname());
-        foodTruckOwner.setLastname(foodTruckOwnerDTO.getLastname());
-        foodTruckOwner.setPhoneNumber(foodTruckOwnerDTO.getPhoneNumber());
-        foodTruckOwner.setBankNumber(foodTruckOwnerDTO.getBankNumber());
-        foodTruckOwner.setTva(foodTruckOwnerDTO.getTva());
-        foodTruckOwner.setCompanyName(foodTruckOwnerDTO.getCompanyName());
-        foodTruckOwner.setAddress(address);
-        foodTruckOwner.setUserCredential(userCredential);
-        FoodTruckOwner foodTruckOwnerSave =  foodTruckOwnerRepo.save(foodTruckOwner);
-        emailService.sendEmailConfirmation(foodTruckOwnerSave, userCredential);  ;
-
-        return mapper.foodTruckOwnerToDto(foodTruckOwnerSave);
-    }
-
     @Override
     public Long findFoodTruckOwnerIdByUserCredentialId(Long userCredentialId) {
         return foodTruckOwnerRepo.findFoodTruckOwnerIdByUserCredentialId(userCredentialId);

@@ -27,6 +27,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
     @PostMapping("/register")
     ResponseEntity<Void> registerUser(@RequestBody @Validated UserLoginDTO userCredentialDTO) {
         logger.info("Registering User: {}", userCredentialDTO.getEmail());

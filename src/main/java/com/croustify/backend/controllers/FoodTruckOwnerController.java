@@ -1,13 +1,9 @@
 package com.croustify.backend.controllers;
 
-import com.croustify.backend.dto.FoodTruckOwnerDTO;
 import com.croustify.backend.dto.NewFoodTruckOwnerDTO;
-import com.croustify.backend.dto.UserCredentialDTO;
 import com.croustify.backend.repositories.UserCredentialRepo;
-import com.croustify.backend.models.UserCredential;
 import com.croustify.backend.services.EmailService;
 import com.croustify.backend.services.FoodTruckOwnerService;
-import jakarta.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +36,6 @@ public class FoodTruckOwnerController {
         return ResponseEntity.noContent().build();
     }
 
-    // add a food truck owner to the database
-    @PostMapping("/addFoodTruckOwner")
-    public ResponseEntity<FoodTruckOwnerDTO> addFoodTruckOwner(@RequestParam Long userCredentialId, @RequestBody FoodTruckOwnerDTO foodTruckOwnerDTO) throws MessagingException {
-        UserCredential userCredential =  userCredentialRepo.findById(userCredentialId).orElseThrow(() -> new RuntimeException("User not found"));
-        logger.info("Adding FoodTruckOwner: {}", foodTruckOwnerDTO);
-        FoodTruckOwnerDTO addFoodTruckOwner = foodTruckOwnerService.addFoodTruckOwner(userCredentialId, foodTruckOwnerDTO);
-        return ResponseEntity.ok(addFoodTruckOwner);
-    }
-
     //get FoodTruckOwnerId by userCredentialId
     @GetMapping("/findFoodTruckOwnerIdByUserCredentialId")
     public ResponseEntity<Long> findFoodTruckOwnerIdByUserCredentialId(@RequestParam Long userCredentialId) {
@@ -56,6 +43,7 @@ public class FoodTruckOwnerController {
         Long findFoodTruckOwnerIdByUserCredentialId = foodTruckOwnerService.findFoodTruckOwnerIdByUserCredentialId(userCredentialId);
         return ResponseEntity.ok(findFoodTruckOwnerIdByUserCredentialId);
     }
+
 
     // Check if the user is a food truck owner
     @GetMapping("/isFoodTruckOwner")
