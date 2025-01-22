@@ -1,21 +1,23 @@
 package com.croustify.backend.controllers;
 
 
-import com.croustify.backend.dto.LoginResponse;
-import com.croustify.backend.dto.ResetPasswordDTO;
-import com.croustify.backend.dto.UserCredentialDTO;
-import com.croustify.backend.dto.UserLoginDTO;
+import com.croustify.backend.bean.UserRole;
+import com.croustify.backend.dto.*;
+import com.croustify.backend.models.User;
 import com.croustify.backend.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -69,17 +71,15 @@ public class UserController {
         else {
             throw new RuntimeException("Principal is not an instance of UserDetails");
         }
-
-
     }
-    //Validate account
     @GetMapping("/validateAccount")
     public ResponseEntity<String> validateToken(@RequestParam String token) {
         logger.info("Validating token: {}", token);
         userService.validateToken(token);
         return ResponseEntity.ok("Account is valid");
     }
-    //Update password
+
+    @Deprecated
     @PutMapping("/updatePassword")
     public ResponseEntity<String> updatePassword(@RequestBody @Validated UserCredentialDTO userCredentialDTO) {
         logger.info("Updating password: {}", userCredentialDTO);
@@ -87,7 +87,7 @@ public class UserController {
         return ResponseEntity.ok("Password updated successfully");
     }
 
-    //Delete account
+    @Deprecated
     @DeleteMapping("/deleteAccount")
     public ResponseEntity<String> deleteAccount(@RequestParam Long userCredentialId) {
         logger.info("Deleting account: {}", userCredentialId);
@@ -95,5 +95,16 @@ public class UserController {
         return ResponseEntity.ok("Account deleted successfully");
     }
 
-
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDTO>> getUsers(
+            @RequestParam(required = false) UserRole userType,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) Boolean enabled
+    ) {
+        List<UserDTO> users = userService.findUsers(userType, email, firstName, lastName, enabled);
+        return ResponseEntity.ok(users);
+    }
 }

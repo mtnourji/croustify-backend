@@ -24,14 +24,4 @@ public class LocationOwner extends User {
     //Relation OneToMany avec LocationSite car un proprio peut avoir plusieurs locationSite
     @OneToMany(mappedBy ="locationOwner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LocationSite> locationSites = new HashSet<>();
-
-    //Relation ManyToOne avec UserCredential car un locationOwner appartient à un UserCredential
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserCredential userCredential;
-
-
-
-
-
 }

@@ -17,4 +17,6 @@ public interface FoodTruckRepo extends JpaRepository<FoodTruck, Long>, JpaSpecif
     List<FoodTruck> findAllMyFavorites(@Param("userCredentialId") Long userCredentialId);
 
     List<FoodTruck> findByFoodTruckOwnerUserCredentialId(long userId);
+
+    boolean existsByIdAndFoodTruckOwnerUserCredentialId(Long foodTruckId, Long userId);
 }

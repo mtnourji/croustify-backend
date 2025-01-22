@@ -1,21 +1,27 @@
 package com.croustify.backend.services.imp;
 
+import com.croustify.backend.bean.UserRole;
 import com.croustify.backend.component.JwtTokenProvider;
 import com.croustify.backend.dto.UserCredentialDTO;
+import com.croustify.backend.dto.UserDTO;
 import com.croustify.backend.dto.UserLoginDTO;
 import com.croustify.backend.mappers.UserCredentialMapper;
 import com.croustify.backend.models.PasswordResetToken;
 import com.croustify.backend.models.Role;
+import com.croustify.backend.models.User;
 import com.croustify.backend.models.UserCredential;
 import com.croustify.backend.repositories.PasswordResetTokenRepository;
 import com.croustify.backend.repositories.RoleRepo;
 import com.croustify.backend.repositories.UserCredentialRepo;
+import com.croustify.backend.repositories.UserRepository;
 import com.croustify.backend.services.UserService;
+import com.croustify.backend.specifications.UserSpecifications;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,10 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
-
-
 
 @Service
 public class UserServiceImp implements UserService {
@@ -36,7 +40,8 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private UserCredentialRepo userCredentialRepo;
-
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private UserCredentialMapper mapperUser;
 
@@ -159,5 +164,16 @@ public class UserServiceImp implements UserService {
         userCredentialRepo.delete(user);
     }
 
+    @Override
+    public List<UserDTO> findUsers(UserRole userType, String email, String firstName, String lastName, Boolean enabled) {
+        Specification<User> spec = Specification.where(null);
+        spec = spec.and(UserSpecifications.hasType(userType));
 
+        spec = spec.and(UserSpecifications.hasEmail(email));
+        spec = spec.and(UserSpecifications.hasLastName(lastName));
+        spec = spec.and(UserSpecifications.hasFirstName(firstName));
+        spec = spec.and(UserSpecifications.isEnabled(enabled));
+        List<User> users = userRepository.findAll(spec);
+        return mapperUser.rawUserToDto(users);
+    }
 }

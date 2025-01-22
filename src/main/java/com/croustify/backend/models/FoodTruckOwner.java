@@ -1,10 +1,8 @@
 package com.croustify.backend.models;
 
 
-import com.croustify.backend.models.embedded.Address;
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,30 +19,8 @@ public class FoodTruckOwner extends User {
     private String bankNumber;
     private int numberOfAllowedFoodTrucks;
 
-
-
-    //Relation OneToMany avec FoodTruck car un foodTruckOwner peut avoir plusieurs foodTruck
     @OneToMany(mappedBy = "foodTruckOwner", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FoodTruck> foodTrucks = new HashSet<>();
-
-    //Relation OneToOne avec UserCredential car un foodTruckOwner a un userCredential
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private UserCredential userCredential;
-
-
-    public FoodTruckOwner() {
-    }
-
-    public FoodTruckOwner(Long id, String firstname, String lastname, String phoneNumber, String email, Address address, LocalDate createdDate, LocalDate updatedDate, String companyName, String tva, String bankNumber, Set<FoodTruck> foodTrucks, UserCredential userCredential) {
-        super(id, firstname, lastname, phoneNumber, address, createdDate, updatedDate);
-        this.companyName = companyName;
-        this.tva = tva;
-        this.bankNumber = bankNumber;
-        this.foodTrucks = foodTrucks;
-        this.userCredential = userCredential;
-    }
-
 
     public String getCompanyName() {
         return companyName;
@@ -77,15 +53,6 @@ public class FoodTruckOwner extends User {
     public void setFoodTrucks(Set<FoodTruck> foodTrucks) {
         this.foodTrucks = foodTrucks;
     }
-
-    public UserCredential getUserCredential() {
-        return userCredential;
-    }
-
-    public void setUserCredential(UserCredential userCredential) {
-        this.userCredential = userCredential;
-    }
-
 
     public int getNumberOfAllowedFoodTrucks() {
         return numberOfAllowedFoodTrucks;

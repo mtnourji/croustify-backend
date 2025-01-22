@@ -6,19 +6,19 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
-
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class User {
 
     @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.SEQUENCE, generator = "user_seq")
+    @SequenceGenerator(name = "user_seq", sequenceName = "user_sequence")
     private Long id;
     private String firstname;
     private String lastname;
     @Column(name="phone_number")
     private String phoneNumber;
     private String urlProfilePicture;
-
 
     @Embedded
     private Address address;
@@ -27,19 +27,9 @@ public abstract class User {
     @Column(name = "update_at")
     private LocalDate updatedDate = LocalDate.now();
 
-
-    public User() {
-    }
-
-    public User(Long id, String firstname, String lastname, String phoneNumber, Address address, LocalDate createdDate, LocalDate updatedDate) {
-        this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserCredential userCredential;
 
     public Long getId() {
         return id;
@@ -107,4 +97,11 @@ public abstract class User {
     }
 
 
+    public UserCredential getUserCredential() {
+        return userCredential;
+    }
+
+    public void setUserCredential(UserCredential userCredential) {
+        this.userCredential = userCredential;
+    }
 }

@@ -4,8 +4,9 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -37,15 +38,6 @@ public class UserCredential implements UserDetails {
     @OneToMany(mappedBy = "userCredential", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<FoodTruckOwner> foodTruckOwners = new HashSet<>();
 
-    //Relation OneToMany avec Customer car un user peut avoir plusieurs customer
-    @OneToMany(mappedBy = "userCredential", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Customer> customers = new HashSet<>();
-
-    //Relation OneToMany avec Favorite car un user peut avoir plusieurs favorite
-    @OneToMany(mappedBy = "userCredential", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Favorite> favorites = new HashSet<>();
-
-
 
 
     //Relation ManyToMany avec Role car un user peut avoir plusieurs roles
@@ -55,7 +47,6 @@ public class UserCredential implements UserDetails {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
 
     public UserCredential() {
     }

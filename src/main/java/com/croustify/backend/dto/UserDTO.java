@@ -1,6 +1,8 @@
 package com.croustify.backend.dto;
 
 
+import com.croustify.backend.bean.UserRole;
+
 import java.time.LocalDate;
 
 
@@ -13,20 +15,7 @@ public class UserDTO {
     private String urlProfilePicture;
     private AddressDTO address;
     private LocalDate createdDate;
-
-
-    public UserDTO() {
-    }
-
-    public UserDTO(Long id, String firstname, String lastname, String phoneNumber,String email, AddressDTO address, LocalDate createdDate) {
-        this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.email = email;
-        this.createdDate = createdDate;
-    }
+    private UserRole userRole;
 
 
     public Long getId() {
@@ -91,5 +80,13 @@ public class UserDTO {
 
     public void setUrlProfilePicture(String urlProfilePicture) {
         this.urlProfilePicture = urlProfilePicture;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 }

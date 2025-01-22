@@ -1,23 +1,10 @@
 package com.croustify.backend.dto;
 
-import java.time.LocalDate;
-
-
 public class FoodTruckOwnerDTO  extends UserDTO{
     private Long id;
     private String companyName;
     private String tva;
     private String bankNumber;
-
-    public FoodTruckOwnerDTO() {
-    }
-
-    public FoodTruckOwnerDTO(Long id, String firstname, String lastname, String phoneNumber,String email, AddressDTO address, LocalDate createdDate, String companyName, String tva, String bankNumber) {
-        super(id, firstname, lastname, phoneNumber, email, address, createdDate);
-        this.companyName = companyName;
-        this.tva = tva;
-        this.bankNumber = bankNumber;
-    }
 
     public String getCompanyName() {
         return companyName;
