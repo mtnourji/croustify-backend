@@ -33,19 +33,6 @@ public class FoodTruckOwner extends User {
     private UserCredential userCredential;
 
 
-    public FoodTruckOwner() {
-    }
-
-    public FoodTruckOwner(Long id, String firstname, String lastname, String phoneNumber, String email, Address address, LocalDate createdDate, LocalDate updatedDate, String companyName, String tva, String bankNumber, Set<FoodTruck> foodTrucks, UserCredential userCredential) {
-        super(id, firstname, lastname, phoneNumber, address, createdDate, updatedDate);
-        this.companyName = companyName;
-        this.tva = tva;
-        this.bankNumber = bankNumber;
-        this.foodTrucks = foodTrucks;
-        this.userCredential = userCredential;
-    }
-
-
     public String getCompanyName() {
         return companyName;
     }

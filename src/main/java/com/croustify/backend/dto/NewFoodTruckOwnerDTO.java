@@ -6,6 +6,7 @@ public class NewFoodTruckOwnerDTO {
     private String email;
     private String phone;
     private String companyName;
+    private String tvaNumber;
     private AddressDTO address;
     private int numberOfAllowedFoodTrucks;
 
@@ -63,5 +64,13 @@ public class NewFoodTruckOwnerDTO {
 
     public void setNumberOfAllowedFoodTrucks(int numberOfAllowedFoodTrucks) {
         this.numberOfAllowedFoodTrucks = numberOfAllowedFoodTrucks;
+    }
+
+    public String getTvaNumber() {
+        return tvaNumber;
+    }
+
+    public void setTvaNumber(String tvaNumber) {
+        this.tvaNumber = tvaNumber;
     }
 }
