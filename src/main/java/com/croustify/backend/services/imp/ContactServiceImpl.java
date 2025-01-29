@@ -6,6 +6,7 @@ import com.croustify.backend.mappers.ContactMapper;
 import com.croustify.backend.models.Contact;
 import com.croustify.backend.repositories.ContactRepository;
 import com.croustify.backend.services.ContactService;
+import com.croustify.backend.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,9 @@ public class ContactServiceImpl implements ContactService {
 
     @Autowired
     private ContactRepository contactRepo;
+
+    @Autowired
+    private EmailService emailService;
 
 
 
@@ -37,6 +41,9 @@ public class ContactServiceImpl implements ContactService {
     public ContactDTO createContact(ContactRequestDTO contactDTO) {
         final Contact newContact = contactMapper.dtoToContact(contactDTO);
         final Contact saved = contactRepo.save(newContact);
-        return contactMapper.contactToDto(saved);
+        final ContactDTO contactSaved = contactMapper.contactToDto(saved);
+        emailService.sendEmailNotificationContact(contactSaved);
+        return contactSaved;
+
     }
 }

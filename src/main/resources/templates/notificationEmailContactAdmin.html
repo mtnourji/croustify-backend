@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notification Email Contact Admin</title>
+    <style>
+        .notificationEmail-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .header {
+            text-align: center;
+        }
+
+        .logo {
+            width: 200px;
+        }
+
+        .content {
+            margin-top: 20px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: #32464D;
+            text-align: center;
+            background-color: #FDB514;
+        }
+    </style>
+</head>
+<body>
+
+<div class="notificationEmail-container">
+    <div class="header">
+        <img th:src="@{cid:logo}" alt="Croustify" class="logo" />
+    </div>
+    <div class="content">
+
+        <h3><strong>Sujet:</strong> Demande de partenariat</h3>
+        <p>Bonjour,
+        <p>Nouveau contact pour un partenariat avec Croustify</p>
+
+        <p>Voici les informations qu'il nous a soumis:</p>
+        <ul>
+            <li><strong>Nom :</strong> <span th:text="${name}"></span></li>
+            <li><strong>Email :</strong> <span th:text="${email}"></span></li>
+            <li><strong>Numéro de téléphone :</strong> <span th:text="${phone}"></span></li>
+            <li><strong>Message :</strong> <span th:text="${message}"></span></li>
+        </ul>
+        <p>Veuillez le contacter dans les plus brefs délais pour discuter des détails de son contrat.</p>
+        <p>Merci,</p>
+        <p>L'équipe Croustify</p>
+    </div>
+    <div class="footer">
+        <p>&copy; 2025 Croustify. Tous droits réservés.</p>
+    </div>
+</div>
+</body>
+</html>

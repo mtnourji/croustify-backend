@@ -1,11 +1,7 @@
 package com.croustify.backend.services;
 
-import com.croustify.backend.models.FoodTruckOwner;
-import com.croustify.backend.models.UserCredential;
+import com.croustify.backend.dto.ContactDTO;
 
 public interface EmailService {
-
-
-
-    void sendEmailConfirmation(FoodTruckOwner foodTruckOwnerDTO, UserCredential userCredential);
+    void sendEmailNotificationContact(ContactDTO contactDTO);
 }

@@ -1,6 +1,5 @@
 package com.croustify.backend.services.imp;
 
-import com.croustify.backend.dto.FoodTruckOwnerDTO;
 import com.croustify.backend.dto.NewFoodTruckOwnerDTO;
 import com.croustify.backend.mappers.AddressMapper;
 import com.croustify.backend.mappers.FoodTruckOwnerMapper;
@@ -9,7 +8,6 @@ import com.croustify.backend.models.FoodTruckOwner;
 import com.croustify.backend.models.PasswordResetToken;
 import com.croustify.backend.models.Role;
 import com.croustify.backend.models.UserCredential;
-import com.croustify.backend.models.embedded.Address;
 import com.croustify.backend.repositories.FoodTruckOwnerRepo;
 import com.croustify.backend.repositories.PasswordResetTokenRepository;
 import com.croustify.backend.repositories.RoleRepo;
@@ -94,8 +92,7 @@ public class FoodTruckServiceOwnerImp implements FoodTruckOwnerService {
 
     @Override
     public Boolean isFoodTruckOwner(Long userCredentialId) {
-        boolean isFoodTruckOwner = foodTruckOwnerRepo.existsByUserCredentialId(userCredentialId);
-        return isFoodTruckOwner;
+        return foodTruckOwnerRepo.existsByUserCredentialId(userCredentialId);
     }
 
 }

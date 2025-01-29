@@ -1,7 +1,7 @@
 package com.croustify.backend.controllers;
 
-import com.croustify.backend.dto.NewFoodTruckOwnerDTO;
 import com.croustify.backend.repositories.UserCredentialRepo;
+import com.croustify.backend.dto.NewFoodTruckOwnerDTO;
 import com.croustify.backend.services.EmailService;
 import com.croustify.backend.services.FoodTruckOwnerService;
 import org.slf4j.Logger;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class FoodTruckOwnerController {
     private static final Logger logger = LoggerFactory.getLogger(FoodTruckOwnerController.class);
 
-    // Injecting the FoodTruckOwnerService
     @Autowired
     private FoodTruckOwnerService foodTruckOwnerService;
 
@@ -44,8 +43,6 @@ public class FoodTruckOwnerController {
         return ResponseEntity.ok(findFoodTruckOwnerIdByUserCredentialId);
     }
 
-
-    // Check if the user is a food truck owner
     @GetMapping("/isFoodTruckOwner")
     public ResponseEntity<Boolean> isFoodTruckOwner(@RequestParam Long userCredentialId) {
         logger.info("Checking if the user is a food truck owner: {}" , userCredentialId);
