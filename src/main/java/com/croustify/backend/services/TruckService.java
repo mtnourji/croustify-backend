@@ -1,8 +1,6 @@
 package com.croustify.backend.services;
 
 import com.croustify.backend.dto.FoodTruckDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -16,13 +14,10 @@ public interface TruckService {
 
     FoodTruckDTO createTruck(FoodTruckDTO foodTruckDTO, Long foodTruckOwnerId, MultipartFile file) throws IOException, java.io.IOException;
 
-    FoodTruckDTO findTruckById(Long id);
 
     List<FoodTruckDTO> searchFoodTrucks(Boolean isOpen, List<Long> categoryIds, Boolean onlyFavorites);
 
     public FoodTruckDTO updateTruck(Long id, FoodTruckDTO foodTruckDTO);
-    public Page<FoodTruckDTO> getTrucksPageable(Pageable pageable);
-    public Long getTruckByOwnerId(Long ownerId);
     public FoodTruckDTO rateTruck(Long truckId, int rating);
     public FoodTruckDTO openTruck(Long truckId, FoodTruckDTO foodTruckDTO);
     public FoodTruckDTO closeTruck(Long truckId);
@@ -30,4 +25,6 @@ public interface TruckService {
     public String uploadProfileImage(MultipartFile file, Long truckId) throws IOException;
 
     List<FoodTruckDTO> getOwnerTrucks(long userId);
+
+    FoodTruckDTO getOwnerTruck(long userId, long foodTruckId);
 }

@@ -37,6 +37,13 @@ public class FoodTruckController {
         return ResponseEntity.ok(truckService.getOwnerTrucks(userId));
     }
 
+    @OwnUser
+    @PreAuthorize("hasRole('ROLE_FOOD_TRUCK_OWNER')")
+    @GetMapping("/users/{userId}/foodTrucks/{foodTruckId}")
+    public ResponseEntity<FoodTruckDTO> getOwnerFoodTrucks(@PathVariable(name = "userId") long userId,@PathVariable(name = "foodTruckId") long foodTruckId) {
+        return ResponseEntity.ok(truckService.getOwnerTruck(userId, foodTruckId));
+    }
+
     @GetMapping("/foodTrucks")
     public ResponseEntity<List<FoodTruckDTO>> getFoodTrucks(@RequestParam(name = "onlyFavorites", required = false, defaultValue = "false") boolean onlyFavorites) {
         return ResponseEntity.ok(truckService.getTrucks(onlyFavorites));
@@ -50,12 +57,6 @@ public class FoodTruckController {
     ) {
         List<FoodTruckDTO> foodTrucks = truckService.searchFoodTrucks(isOpen, categoryIds, onlyFavorites);
         return ResponseEntity.ok(foodTrucks);
-    }
-
-    // Get food truck by id
-    @GetMapping("/foodTrucks/{id}")
-    private FoodTruckDTO findById(@PathVariable Long id) {
-        return truckService.findTruckById(id);
     }
 
 
@@ -79,12 +80,6 @@ public class FoodTruckController {
         return ResponseEntity.ok(updatedFoodTruck);
     }
 
-
-    // Get food truck by owner id
-    @GetMapping("/foodTruckByOwnerId")
-    public ResponseEntity<Long> getFoodTruckByOwnerId(@RequestParam("ownerId") Long ownerId) {
-        return ResponseEntity.ok(truckService.getTruckByOwnerId(ownerId));
-    }
 
     // Delete food truck
     @DeleteMapping("/deleteFoodTruck")

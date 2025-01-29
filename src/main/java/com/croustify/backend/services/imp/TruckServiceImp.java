@@ -16,8 +16,6 @@ import io.jsonwebtoken.io.IOException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,8 +101,9 @@ public class TruckServiceImp implements TruckService {
     }
 
     @Override
-    public FoodTruckDTO findTruckById(Long id) {
-        final FoodTruck truck = getTruckById((long) id);
+    @Transactional
+    public FoodTruckDTO getOwnerTruck(long userId, long foodTruckId) {
+        final FoodTruck truck = getTruckById(foodTruckId);
         return mapper.foodTruckToDto(truck);
     }
 
@@ -158,24 +157,10 @@ public class TruckServiceImp implements TruckService {
     }
 
     @Override
-    public Page<FoodTruckDTO> getTrucksPageable(Pageable pageable) {
-        final Page<FoodTruck> trucks = foodTruckRepo.findAll(pageable);
-        return trucks.map(mapper::foodTruckToDto);
-    }
-
-    //delete truck
-   @Override
     public void deleteTruck(int id) {
         foodTruckRepo.deleteById((long) id);
     }
 
-    //get truck by owner id
-    @Override
-    public Long getTruckByOwnerId(Long ownerId) {
-        return foodTruckRepo.findByFoodTruckOwnerId(ownerId);
-    }
-
-    //rate truck
     @Override
     public FoodTruckDTO rateTruck(Long truckId, int rating) {
         final FoodTruck truck = getTruckById(truckId);
