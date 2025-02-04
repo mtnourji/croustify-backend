@@ -1,8 +1,11 @@
 package com.croustify.backend.services.imp;
 
 
+import com.croustify.backend.dto.CategoryMenusDTO;
+import com.croustify.backend.dto.MenuCategoryDTO;
 import com.croustify.backend.dto.MenuCreationDTO;
 import com.croustify.backend.dto.MenuDTO;
+import com.croustify.backend.mappers.MenuCategoryMapper;
 import com.croustify.backend.mappers.MenuMapper;
 import com.croustify.backend.models.FoodTruck;
 import com.croustify.backend.models.Menu;
@@ -15,8 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuServiceImp implements MenuService {
@@ -28,12 +31,23 @@ public class MenuServiceImp implements MenuService {
     private MenuCategoryRepository menuCategoryRepository;
     @Autowired
     private MenuMapper mapper;
+    @Autowired
+    private MenuCategoryMapper categoryMapper;
 
     @Transactional
     @Override
-    public List<MenuDTO> getFoodTruckMenus(long foodTruckId) {
+    public List<CategoryMenusDTO> getFoodTruckMenus(long foodTruckId) {
+        final List<CategoryMenusDTO> result = new ArrayList<>();
         final List<Menu> menus = menuRepo.findAllByFoodTruckId(foodTruckId);
-        return menus.stream().map(mapper::menuToDto).toList();
+
+        final Map<MenuCategoryDTO, List<MenuDTO>> categoryMap = menus.stream()
+                .flatMap(menu -> menu.getMenuCategories().stream()
+                        .map(category -> new AbstractMap.SimpleEntry<>(categoryMapper.categoryToDto(category), mapper.menuToDto(menu))))
+                .collect(Collectors.groupingBy(Map.Entry::getKey,
+                        Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
+
+        categoryMap.forEach((categ,list) -> result.add(new CategoryMenusDTO(categ, list)));
+        return  result;
     }
 
     @Transactional
