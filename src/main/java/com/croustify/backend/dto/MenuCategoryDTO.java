@@ -1,5 +1,7 @@
 package com.croustify.backend.dto;
 
+import java.util.Objects;
+
 public class MenuCategoryDTO {
 
     private Long id;
@@ -28,5 +30,22 @@ public class MenuCategoryDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MenuCategoryDTO that = (MenuCategoryDTO) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description);
     }
 }

@@ -11,9 +11,6 @@ public class MenuDTO {
     private BigDecimal priceTtc;
     private Set<MenuCategoryDTO> categories;
 
-    public MenuDTO() {
-    }
-
     public Long getId() {
         return id;
     }

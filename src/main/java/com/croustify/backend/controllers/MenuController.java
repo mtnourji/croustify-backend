@@ -1,6 +1,7 @@
 package com.croustify.backend.controllers;
 
 
+import com.croustify.backend.dto.CategoryMenusDTO;
 import com.croustify.backend.dto.MenuCreationDTO;
 import com.croustify.backend.dto.MenuDTO;
 import com.croustify.backend.services.MenuService;
@@ -32,8 +33,8 @@ public class MenuController {
     }
 
     @GetMapping("/foodTrucks/{foodTruckId}/menus")
-    public List<MenuDTO> getMenusByTruckId(@PathVariable("foodTruckId") Long foodTruckId) {
-        return menuService.getFoodTruckMenus(foodTruckId);
+    public ResponseEntity<List<CategoryMenusDTO>> getMenusByTruckId(@PathVariable("foodTruckId") Long foodTruckId) {
+        return ResponseEntity.ok(menuService.getFoodTruckMenus(foodTruckId));
     }
 }
 
