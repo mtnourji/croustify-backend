@@ -1,7 +1,9 @@
 package com.croustify.backend.controllers;
 
 import com.croustify.backend.dto.FoodTruckDTO;
+import com.croustify.backend.dto.OpenFoodTruckRequestDTO;
 import com.croustify.backend.services.TruckService;
+import com.croustify.backend.validation.OwnFoodTruck;
 import com.croustify.backend.validation.OwnUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,16 +100,17 @@ public class FoodTruckController {
         return ResponseEntity.ok(ratedFoodTruck);
     }
 
+    @OwnFoodTruck
     @PutMapping("/openFoodTruck")
-    public ResponseEntity<FoodTruckDTO> openFoodTruck(@RequestParam("foodTruckId") Long truckId, @RequestBody FoodTruckDTO foodTruckDTO) {
-        final FoodTruckDTO openedFoodTruck = truckService.openTruck(truckId, foodTruckDTO);
-        return ResponseEntity.ok(openedFoodTruck);
+    public ResponseEntity<Void> openFoodTruck(@RequestParam("foodTruckId") Long foodTruckId, @RequestBody OpenFoodTruckRequestDTO request) {
+        truckService.openTruck(foodTruckId, request);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/closeFoodTruck")
-    public ResponseEntity<FoodTruckDTO> closeFoodTruck(@RequestParam("foodTruckId") Long truckId) {
-        final FoodTruckDTO closedFoodTruck = truckService.closeTruck(truckId);
-        return ResponseEntity.ok(closedFoodTruck);
+    public ResponseEntity<Void> closeFoodTruck(@RequestParam("foodTruckId") Long truckId) {
+        truckService.closeTruck(truckId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/isFoodTruckOpen")

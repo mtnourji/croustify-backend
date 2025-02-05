@@ -1,6 +1,7 @@
 package com.croustify.backend.services;
 
 import com.croustify.backend.dto.FoodTruckDTO;
+import com.croustify.backend.dto.OpenFoodTruckRequestDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -19,8 +20,8 @@ public interface TruckService {
 
     FoodTruckDTO updateTruck(Long id, FoodTruckDTO foodTruckDTO);
     FoodTruckDTO rateTruck(Long truckId, int rating);
-    FoodTruckDTO openTruck(Long truckId, FoodTruckDTO foodTruckDTO);
-    FoodTruckDTO closeTruck(Long truckId);
+    void openTruck(Long truckId, OpenFoodTruckRequestDTO foodTruckDTO);
+    void closeTruck(Long truckId);
     boolean findStatusById(Long id);
     String uploadProfileImage(MultipartFile file, Long truckId) throws IOException;
 

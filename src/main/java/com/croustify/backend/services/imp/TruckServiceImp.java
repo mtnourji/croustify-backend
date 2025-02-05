@@ -2,9 +2,12 @@ package com.croustify.backend.services.imp;
 
 import com.croustify.backend.dto.CategoryDTO;
 import com.croustify.backend.dto.FoodTruckDTO;
+import com.croustify.backend.dto.OpenFoodTruckMode;
+import com.croustify.backend.dto.OpenFoodTruckRequestDTO;
 import com.croustify.backend.mappers.FoodTruckMapper;
 import com.croustify.backend.models.FoodTruck;
 import com.croustify.backend.models.FoodTruckOwner;
+import com.croustify.backend.models.embedded.Coordinates;
 import com.croustify.backend.repositories.CategoryRepository;
 import com.croustify.backend.repositories.FoodTruckOwnerRepo;
 import com.croustify.backend.repositories.FoodTruckRepo;
@@ -187,27 +190,28 @@ public class TruckServiceImp implements TruckService {
         return mapper.foodTruckToDto(updatedTruck);
     }
 
-    //Open truck
     @Override
-    public FoodTruckDTO openTruck(Long truckId, FoodTruckDTO foodTruckDTO) {
+    public void openTruck(Long truckId, OpenFoodTruckRequestDTO foodTruckDTO) {
         final FoodTruck truck = getTruckById(truckId);
-
-        if (foodTruckDTO.getCoordinates() != null) {
-            truck.setCoordinates(foodTruckDTO.getCoordinates());
-            truck.setOpen(true);
+        final Coordinates coordinates = new Coordinates();
+        if(OpenFoodTruckMode.CURRENT_POSITION.equals(foodTruckDTO.getOpenFoodTruckMode())){
+            coordinates.setLatitude(foodTruckDTO.getLatLng().getLat());
+            coordinates.setLongitude(foodTruckDTO.getLatLng().getLng());
+        } else if(OpenFoodTruckMode.FOODTRUCK_ADDRESS.equals(foodTruckDTO.getOpenFoodTruckMode())){
+            coordinates.setLongitude(truck.getDefaultCoordinates().getLongitude());
+            coordinates.setLatitude(truck.getDefaultCoordinates().getLatitude());
         }
-        final FoodTruck updatedTruck = foodTruckRepo.save(truck);
-        return mapper.foodTruckToDto(updatedTruck);
-
+        truck.setCoordinates(coordinates);
+        truck.setOpen(true);
+        foodTruckRepo.save(truck);
     }
 
     //Close truck
     @Override
-    public FoodTruckDTO closeTruck(Long truckId) {
+    public void closeTruck(Long truckId) {
         final FoodTruck truck = getTruckById(truckId);
         truck.setOpen(false);
-        final FoodTruck updatedTruck = foodTruckRepo.save(truck);
-        return mapper.foodTruckToDto(updatedTruck);
+        foodTruckRepo.save(truck);
     }
 
     //find truck is open or not

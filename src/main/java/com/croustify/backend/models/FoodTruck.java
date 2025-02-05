@@ -39,6 +39,12 @@ public class FoodTruck {
             @AttributeOverride(name = "longitude", column = @Column(name = "longitude"))
     })
     private Coordinates coordinates;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "latitude", column = @Column(name = "default_latitude")),
+            @AttributeOverride(name = "longitude", column = @Column(name = "default_longitude"))
+    })
+    private Coordinates defaultCoordinates;
     private Float length;
     private Float width;
     private Boolean isOpen = false;
@@ -189,5 +195,13 @@ public class FoodTruck {
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
+    }
+
+    public Coordinates getDefaultCoordinates() {
+        return defaultCoordinates;
+    }
+
+    public void setDefaultCoordinates(Coordinates defaultCoordinates) {
+        this.defaultCoordinates = defaultCoordinates;
     }
 }
