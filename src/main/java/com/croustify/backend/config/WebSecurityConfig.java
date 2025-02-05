@@ -67,6 +67,8 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/password/change").permitAll()
                         .requestMatchers(HttpMethod.POST, "/password/validate-token").permitAll()
                         .requestMatchers(HttpMethod.POST, "/contacts").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/localities").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/latLngFromLocation").permitAll()
                         .requestMatchers("/v2/api-docs", "/swagger-resources/**", "/swagger-ui/**", "/webjars/**").permitAll()
                         .requestMatchers("/**").authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

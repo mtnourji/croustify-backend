@@ -15,16 +15,17 @@ public interface TruckService {
     FoodTruckDTO createTruck(FoodTruckDTO foodTruckDTO, Long foodTruckOwnerId, MultipartFile file) throws IOException, java.io.IOException;
 
 
-    List<FoodTruckDTO> searchFoodTrucks(Boolean isOpen, List<Long> categoryIds, Boolean onlyFavorites);
+    List<FoodTruckDTO> searchFoodTrucks(Boolean isOpen, List<Long> categoryIds, Boolean onlyFavorites, Double lat, Double lng, Integer radiusInKm);
 
-    public FoodTruckDTO updateTruck(Long id, FoodTruckDTO foodTruckDTO);
-    public FoodTruckDTO rateTruck(Long truckId, int rating);
-    public FoodTruckDTO openTruck(Long truckId, FoodTruckDTO foodTruckDTO);
-    public FoodTruckDTO closeTruck(Long truckId);
-    public boolean findStatusById(Long id);
-    public String uploadProfileImage(MultipartFile file, Long truckId) throws IOException;
+    FoodTruckDTO updateTruck(Long id, FoodTruckDTO foodTruckDTO);
+    FoodTruckDTO rateTruck(Long truckId, int rating);
+    FoodTruckDTO openTruck(Long truckId, FoodTruckDTO foodTruckDTO);
+    FoodTruckDTO closeTruck(Long truckId);
+    boolean findStatusById(Long id);
+    String uploadProfileImage(MultipartFile file, Long truckId) throws IOException;
 
     List<FoodTruckDTO> getOwnerTrucks(long userId);
 
     FoodTruckDTO getOwnerTruck(long userId, long foodTruckId);
+
 }

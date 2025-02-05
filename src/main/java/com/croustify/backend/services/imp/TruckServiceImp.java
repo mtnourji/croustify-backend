@@ -28,11 +28,13 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class TruckServiceImp implements TruckService {
 
+    private static final int DEFAULT_RADIUS_IN_KM = 10;
     @Value("${storage.trucks-image-location}")
     private String foodTruckPicturesLocation;
 
@@ -113,7 +115,7 @@ public class TruckServiceImp implements TruckService {
 
     @Transactional
     @Override
-    public List<FoodTruckDTO> searchFoodTrucks(Boolean isOpen, List<Long> categoryIds, Boolean onlyFavorites) {
+    public List<FoodTruckDTO> searchFoodTrucks(Boolean isOpen, List<Long> categoryIds, Boolean onlyFavorites, Double lat, Double lng, Integer radiusInKm) {
         Specification<FoodTruck> spec = Specification.where(null);
         if (isOpen != null) {
             spec = spec.and(FoodTruckSpecifications.isOpen(isOpen));
@@ -126,7 +128,13 @@ public class TruckServiceImp implements TruckService {
             spec = spec.and(FoodTruckSpecifications.isFavoriteForUser(userCredentialId));
         }
 
-        return mapper.foodTruckToDto(foodTruckRepo.findAll(spec));
+        final List<FoodTruck> all = foodTruckRepo.findAll(spec);
+        if(lat != null){
+            final List<FoodTruck> byLocationWithinRadius = foodTruckRepo.findByLocationWithinRadius(lat, lng, Optional.ofNullable(radiusInKm).orElse(DEFAULT_RADIUS_IN_KM), all.stream().map(FoodTruck::getId).toList());
+            return mapper.foodTruckToDto(byLocationWithinRadius);
+        }
+
+        return mapper.foodTruckToDto(all);
     }
 
 

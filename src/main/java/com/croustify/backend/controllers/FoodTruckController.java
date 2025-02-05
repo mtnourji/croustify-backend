@@ -49,16 +49,22 @@ public class FoodTruckController {
         return ResponseEntity.ok(truckService.getTrucks(onlyFavorites));
     }
 
+
+
     @GetMapping("/foodTrucks/search")
     public ResponseEntity<List<FoodTruckDTO>> searchFoodTrucks(
             @RequestParam(required = false) Boolean isOpen,
             @RequestParam(required = false) List<Long> categoryIds,
-            @RequestParam(required = false) Boolean onlyFavorites
-    ) {
-        List<FoodTruckDTO> foodTrucks = truckService.searchFoodTrucks(isOpen, categoryIds, onlyFavorites);
+            @RequestParam(required = false) Boolean onlyFavorites,
+            @RequestParam(required = false) Double lat,
+            @RequestParam(required = false) Double lng,
+            @RequestParam(required = false) Integer radiusInKm) {
+        if((lat == null && lng != null) || (lat != null && lng == null)){
+            throw new IllegalArgumentException("Invalid request, lat and lng must be set together");
+        }
+        List<FoodTruckDTO> foodTrucks = truckService.searchFoodTrucks(isOpen, categoryIds, onlyFavorites, lat, lng, radiusInKm);
         return ResponseEntity.ok(foodTrucks);
     }
-
 
     @OwnUser
     @PreAuthorize("hasRole('ROLE_FOOD_TRUCK_OWNER')")
@@ -72,7 +78,6 @@ public class FoodTruckController {
         return ResponseEntity.created(URI.create("/foodTrucks/" + createdFoodTruck.getId())).build();
     }
 
-    // Update food truck
     @PutMapping(value = "/updateFoodTruck", consumes = "multipart/form-data")
     public ResponseEntity<FoodTruckDTO> updateFoodTruck(@RequestParam("ownerId") Long id, @RequestPart("foodTruck") MultipartFile foodTruckFile) throws IOException {
         FoodTruckDTO foodTruck = objectMapper.readValue(foodTruckFile.getInputStream(), FoodTruckDTO.class);
@@ -81,41 +86,35 @@ public class FoodTruckController {
     }
 
 
-    // Delete food truck
     @DeleteMapping("/deleteFoodTruck")
     public ResponseEntity<Void> deleteFoodTruck(@RequestParam("foodTruckId") int id) {
         truckService.deleteTruck(id);
         return ResponseEntity.noContent().build();
     }
 
-    // Rate food truck
     @PutMapping("/rateFoodTruck")
     public ResponseEntity<FoodTruckDTO> rateFoodTruck(@RequestParam("foodTruckId") Long truckId, @RequestParam("rating") int rating) {
         final FoodTruckDTO ratedFoodTruck = truckService.rateTruck(truckId, rating);
         return ResponseEntity.ok(ratedFoodTruck);
     }
 
-    // Open food truck
     @PutMapping("/openFoodTruck")
     public ResponseEntity<FoodTruckDTO> openFoodTruck(@RequestParam("foodTruckId") Long truckId, @RequestBody FoodTruckDTO foodTruckDTO) {
         final FoodTruckDTO openedFoodTruck = truckService.openTruck(truckId, foodTruckDTO);
         return ResponseEntity.ok(openedFoodTruck);
     }
 
-    // Close food truck
     @PutMapping("/closeFoodTruck")
     public ResponseEntity<FoodTruckDTO> closeFoodTruck(@RequestParam("foodTruckId") Long truckId) {
         final FoodTruckDTO closedFoodTruck = truckService.closeTruck(truckId);
         return ResponseEntity.ok(closedFoodTruck);
     }
 
-    // Find if food truck is open
     @GetMapping("/isFoodTruckOpen")
     public ResponseEntity<Boolean> isFoodTruckOpen(@RequestParam("foodTruckId") Long id) {
         return ResponseEntity.ok(truckService.findStatusById(id));
     }
 
-    //upload image
     @PostMapping("/uploadImage")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("foodTruckId") Long foodTruckId) {
 

@@ -19,4 +19,7 @@ public interface FoodTruckRepo extends JpaRepository<FoodTruck, Long>, JpaSpecif
     List<FoodTruck> findByFoodTruckOwnerUserCredentialId(long userId);
 
     boolean existsByIdAndFoodTruckOwnerUserCredentialId(Long foodTruckId, Long userId);
+
+    @Query("SELECT ft FROM FoodTruck ft WHERE (6371 * acos(cos(radians(:lat)) * cos(radians(ft.coordinates.latitude)) * cos(radians(ft.coordinates.longitude) - radians(:lng)) + sin(radians(:lat)) * sin(radians(ft.coordinates.latitude)))) < :radius and ft.id in :ids")
+    List<FoodTruck> findByLocationWithinRadius(@Param("lat") double lat, @Param("lng") double lng, @Param("radius") double radius, @Param("ids") List<Long> ids);
 }

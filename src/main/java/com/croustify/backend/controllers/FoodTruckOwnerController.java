@@ -28,7 +28,7 @@ public class FoodTruckOwnerController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/foodTruckOwners")
-     ResponseEntity<Void> registerFoodTruckOwner(@RequestBody @Validated NewFoodTruckOwnerDTO owner) {
+    public ResponseEntity<Void> registerFoodTruckOwner(@RequestBody @Validated NewFoodTruckOwnerDTO owner) {
         logger.info("Registering FoodTruckOwner: {} {}", owner.getEmail(), owner.getCompanyName());
         foodTruckOwnerService.createFoodTruckOwner(owner);
         // TODO at least return id

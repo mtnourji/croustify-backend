@@ -1,13 +1,15 @@
 package com.croustify.backend.models;
 
 
-import com.croustify.backend.enums.FoodType;
 import com.croustify.backend.models.embedded.Coordinates;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "food_truck")
@@ -31,6 +33,11 @@ public class FoodTruck {
 
     private String speciality;
     private String profileImage;
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "latitude", column = @Column(name = "latitude")),
+            @AttributeOverride(name = "longitude", column = @Column(name = "longitude"))
+    })
     private Coordinates coordinates;
     private Float length;
     private Float width;
