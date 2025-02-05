@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -100,16 +101,19 @@ public class FoodTruckController {
         return ResponseEntity.ok(ratedFoodTruck);
     }
 
+    @Secured({ "ROLE_ADMIN", "ROLE_FOOD_TRUCK_OWNER" })
     @OwnFoodTruck
-    @PutMapping("/openFoodTruck")
-    public ResponseEntity<Void> openFoodTruck(@RequestParam("foodTruckId") Long foodTruckId, @RequestBody OpenFoodTruckRequestDTO request) {
+    @PostMapping("/foodTrucks/{foodTruckId}/open")
+    public ResponseEntity<Void> openFoodTruck(@PathVariable("foodTruckId") Long foodTruckId, @RequestBody OpenFoodTruckRequestDTO request) {
         truckService.openTruck(foodTruckId, request);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/closeFoodTruck")
-    public ResponseEntity<Void> closeFoodTruck(@RequestParam("foodTruckId") Long truckId) {
-        truckService.closeTruck(truckId);
+    @Secured({ "ROLE_ADMIN", "ROLE_FOOD_TRUCK_OWNER" })
+    @OwnFoodTruck
+    @PostMapping("/foodTrucks/{foodTruckId}/close")
+    public ResponseEntity<Void> closeFoodTruck(@PathVariable("foodTruckId") Long foodTruckId) {
+        truckService.closeTruck(foodTruckId);
         return ResponseEntity.ok().build();
     }
 
