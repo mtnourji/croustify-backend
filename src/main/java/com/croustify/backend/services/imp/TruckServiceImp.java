@@ -1,9 +1,7 @@
 package com.croustify.backend.services.imp;
 
-import com.croustify.backend.dto.CategoryDTO;
-import com.croustify.backend.dto.FoodTruckDTO;
-import com.croustify.backend.dto.OpenFoodTruckMode;
-import com.croustify.backend.dto.OpenFoodTruckRequestDTO;
+import com.croustify.backend.connector.OpenStreetMapConnector;
+import com.croustify.backend.dto.*;
 import com.croustify.backend.mappers.FoodTruckMapper;
 import com.croustify.backend.models.FoodTruck;
 import com.croustify.backend.models.FoodTruckOwner;
@@ -46,6 +44,9 @@ public class TruckServiceImp implements TruckService {
 
     @Autowired
     private UserCredentialRepo userCredentialRepo;
+
+    @Autowired
+    private OpenStreetMapConnector openStreetMapConnector;
 
     @Autowired
     private FoodTruckOwnerRepo foodTruckOwnerRepo;
@@ -191,22 +192,28 @@ public class TruckServiceImp implements TruckService {
     }
 
     @Override
-    public void openTruck(Long truckId, OpenFoodTruckRequestDTO foodTruckDTO) {
+    public void openTruck(Long truckId, OpenFoodTruckRequestDTO request) {
         final FoodTruck truck = getTruckById(truckId);
         final Coordinates coordinates = new Coordinates();
-        if(OpenFoodTruckMode.CURRENT_POSITION.equals(foodTruckDTO.getOpenFoodTruckMode())){
-            coordinates.setLatitude(foodTruckDTO.getLatLng().getLat());
-            coordinates.setLongitude(foodTruckDTO.getLatLng().getLng());
-        } else if(OpenFoodTruckMode.FOODTRUCK_ADDRESS.equals(foodTruckDTO.getOpenFoodTruckMode())){
+        if(OpenFoodTruckMode.CURRENT_POSITION.equals(request.getOpenFoodTruckMode())){
+            coordinates.setLatitude(request.getLatLng().getLat());
+            coordinates.setLongitude(request.getLatLng().getLng());
+        } else if(OpenFoodTruckMode.FOODTRUCK_ADDRESS.equals(request.getOpenFoodTruckMode())){
             coordinates.setLongitude(truck.getDefaultCoordinates().getLongitude());
             coordinates.setLatitude(truck.getDefaultCoordinates().getLatitude());
+        } else if(OpenFoodTruckMode.CUSTOM_ADDRESS.equals(request.getOpenFoodTruckMode())){
+            final LatLon latLon = openStreetMapConnector.getCoordinates(request.getCustomAddress().getPostalCode(), request.getCustomAddress().getStreet(),
+                    request.getCustomAddress().getStreetNumber(), request.getCustomAddress().getCity());
+            coordinates.setLatitude(latLon.getLat());
+            coordinates.setLongitude(latLon.getLon());
+        } else {
+            throw new UnsupportedOperationException("Mode " + request.getOpenFoodTruckMode() + " not supported");
         }
         truck.setCoordinates(coordinates);
         truck.setOpen(true);
         foodTruckRepo.save(truck);
     }
 
-    //Close truck
     @Override
     public void closeTruck(Long truckId) {
         final FoodTruck truck = getTruckById(truckId);
@@ -214,7 +221,6 @@ public class TruckServiceImp implements TruckService {
         foodTruckRepo.save(truck);
     }
 
-    //find truck is open or not
     @Override
     public boolean findStatusById(Long id) {
         return foodTruckRepo.findStatusById(id);
