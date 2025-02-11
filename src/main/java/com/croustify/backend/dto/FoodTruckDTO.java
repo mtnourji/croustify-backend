@@ -13,6 +13,7 @@ public class FoodTruckDTO {
     private String description;
     private String speciality;
     private Coordinates coordinates;
+    private AddressDTO defaultAddress;
     private List<CategoryDTO> categories = new ArrayList<>();
     private String profileImage;
     private int rating;
@@ -21,11 +22,6 @@ public class FoodTruckDTO {
     private Set<MenuDTO> menus;
     private List<PictureDTO> pictures;
 
-
-
-
-    public FoodTruckDTO() {
-    }
 
     public Long getId() {
         return id;
@@ -121,6 +117,14 @@ public class FoodTruckDTO {
 
     public void setCategories(List<CategoryDTO> categories) {
         this.categories = categories;
+    }
+
+    public AddressDTO getDefaultAddress() {
+        return defaultAddress;
+    }
+
+    public void setDefaultAddress(AddressDTO defaultAddress) {
+        this.defaultAddress = defaultAddress;
     }
 }
 

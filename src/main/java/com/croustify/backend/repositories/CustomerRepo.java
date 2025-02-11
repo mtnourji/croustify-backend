@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface CustomerRepo extends JpaRepository<Customer, Long> {
     //Extract the userCredentialId from the Customer entity
     Optional<Customer> findByUserCredentialId(Long userCredentialId);
+
+    Customer getReferenceByUserCredentialId(Long id);
 }

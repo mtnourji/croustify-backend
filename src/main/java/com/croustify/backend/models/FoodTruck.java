@@ -1,6 +1,7 @@
 package com.croustify.backend.models;
 
 
+import com.croustify.backend.models.embedded.Address;
 import com.croustify.backend.models.embedded.Coordinates;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -45,6 +46,8 @@ public class FoodTruck {
             @AttributeOverride(name = "longitude", column = @Column(name = "default_longitude"))
     })
     private Coordinates defaultCoordinates;
+    @Embedded
+    private Address defaultAddress;
     private Float length;
     private Float width;
     private Boolean isOpen = false;
@@ -203,5 +206,13 @@ public class FoodTruck {
 
     public void setDefaultCoordinates(Coordinates defaultCoordinates) {
         this.defaultCoordinates = defaultCoordinates;
+    }
+
+    public Address getDefaultAddress() {
+        return defaultAddress;
+    }
+
+    public void setDefaultAddress(Address defaultAddress) {
+        this.defaultAddress = defaultAddress;
     }
 }

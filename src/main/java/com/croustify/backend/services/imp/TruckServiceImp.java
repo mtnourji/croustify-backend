@@ -85,14 +85,19 @@ public class TruckServiceImp implements TruckService {
             throw new IllegalArgumentException("Number of maximum food trucks reached for user " + userId);
         }
 
-        FoodTruck foodTruck = new FoodTruck();
-        foodTruck.setName(foodTruckDTO.getName());
-        foodTruck.setDescription(foodTruckDTO.getDescription());
-        foodTruck.setSpeciality(foodTruckDTO.getSpeciality());
+        FoodTruck foodTruck = mapper.dtoToFoodTruck(foodTruckDTO);
         if(!foodTruckDTO.getCategories().isEmpty()) {
             foodTruck.setCategories(new HashSet<>(categoryRepository.findAllById(foodTruckDTO.getCategories().stream().map(CategoryDTO::getId).toList())));
         }
         foodTruck.setCoordinates(foodTruckDTO.getCoordinates());
+        if(foodTruck.getDefaultAddress() != null && (foodTruckDTO.getCoordinates() == null || foodTruckDTO.getCoordinates().getLatitude() == null || foodTruckDTO.getCoordinates().getLongitude() == null)){
+            final LatLon latLon = openStreetMapConnector.getCoordinates(foodTruck.getDefaultAddress().getPostalCode(), foodTruck.getDefaultAddress().getStreet(),
+                    foodTruck.getDefaultAddress().getStreetNumber(), foodTruck.getDefaultAddress().getCity());
+            Coordinates coordinates = new Coordinates();
+            coordinates.setLatitude(latLon.getLat());
+            coordinates.setLongitude(latLon.getLon());
+            foodTruck.setDefaultCoordinates(coordinates);
+        }
         foodTruck.setFoodTruckOwner(foodTruckOwner);
 
         final FoodTruck savedFoodTruck = foodTruckRepo.save(foodTruck);
