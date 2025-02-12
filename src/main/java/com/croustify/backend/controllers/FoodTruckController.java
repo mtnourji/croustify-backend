@@ -87,6 +87,13 @@ public class FoodTruckController {
         return ResponseEntity.ok(truckService.updateTruck(foodTruckId, update));
     }
 
+    @OwnFoodTruck
+    @Secured("ROLE_FOOD_TRUCK_OWNER")
+    @PutMapping("/foodTrucks/{foodTruckId}/profileImage")
+    public ResponseEntity<Void> updateProfileImage(@PathVariable("foodTruckId") Long foodTruckId, @RequestParam("image") MultipartFile file) {
+        truckService.updateProfileImage(foodTruckId, file);
+        return ResponseEntity.noContent().build();
+    }
 
     @OwnFoodTruck
     @Secured("ROLE_FOOD_TRUCK_OWNER")
@@ -121,18 +128,6 @@ public class FoodTruckController {
     @GetMapping("/isFoodTruckOpen")
     public ResponseEntity<Boolean> isFoodTruckOpen(@RequestParam("foodTruckId") Long id) {
         return ResponseEntity.ok(truckService.findStatusById(id));
-    }
-
-    @PostMapping("/uploadImage")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("foodTruckId") Long foodTruckId) {
-
-        try {
-            truckService.uploadProfileImage(file, foodTruckId);
-
-            return ResponseEntity.ok("Image uploaded successfully");
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().body("Image upload failed");
-        }
     }
 
     @GetMapping("/images/{folder}/{filename}")

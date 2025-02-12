@@ -7,7 +7,6 @@ public class FoodTruckUpdateDTO {
     private String name;
     private String description;
     private String speciality;
-    private String profileImage;
 
     private AddressDTO defaultAddress;
     private List<CategoryDTO> categories;
@@ -52,12 +51,5 @@ public class FoodTruckUpdateDTO {
         this.categories = categories;
     }
 
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
 }
 

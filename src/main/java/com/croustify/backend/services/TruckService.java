@@ -30,4 +30,5 @@ public interface TruckService {
 
     FoodTruckDTO getOwnerTruck(long userId, long foodTruckId);
 
+    void updateProfileImage(Long foodTruckId, MultipartFile file);
 }

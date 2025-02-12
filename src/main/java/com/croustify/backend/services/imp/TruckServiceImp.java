@@ -15,8 +15,9 @@ import com.croustify.backend.repositories.UserCredentialRepo;
 import com.croustify.backend.services.TruckService;
 import com.croustify.backend.specifications.FoodTruckSpecifications;
 import com.croustify.backend.util.SecurityUtil;
-import io.jsonwebtoken.io.IOException;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,17 +34,16 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class TruckServiceImp implements TruckService {
 
+    private static final Logger logger = LoggerFactory.getLogger(TruckServiceImp.class);
     private static final int DEFAULT_RADIUS_IN_KM = 10;
     @Value("${storage.trucks-image-location}")
     private String foodTruckPicturesLocation;
-
-    @Value("http://10.0.2.2:8686/api/images/foodTruck/")
-    private String foodTrucksStaticRessiurcesUrl;
 
     @Autowired
     private UserCredentialRepo userCredentialRepo;
@@ -83,7 +84,7 @@ public class TruckServiceImp implements TruckService {
 
     @Transactional
     @Override
-    public FoodTruckDTO createTruck(final FoodTruckDTO foodTruckDTO, final Long userId, final MultipartFile file) throws IOException, java.io.IOException {
+    public FoodTruckDTO createTruck(final FoodTruckDTO foodTruckDTO, final Long userId, final MultipartFile file) throws IOException {
         final FoodTruckOwner foodTruckOwner = foodTruckOwnerRepo.getReferenceByUserCredentialId(userId).orElseThrow(() -> new EntityNotFoundException("Food truck owner not found with user id: " + userId));
 
         if(foodTruckOwner.getFoodTrucks().size() >= foodTruckOwner.getNumberOfAllowedFoodTrucks()){
@@ -169,9 +170,7 @@ public class TruckServiceImp implements TruckService {
         if(!update.getCategories().isEmpty()){
             truck.setCategories(new HashSet<>(categoryRepository.findAllById(update.getCategories().stream().map(CategoryDTO::getId).toList())));
         }
-        if (update.getProfileImage() != null) {
-            truck.setProfileImage(update.getProfileImage());
-        }
+
         if(update.getDefaultAddress() != null){
             final Address address = addressMapper.dtoToAddress(update.getDefaultAddress());
             if(!address.equals(truck.getDefaultAddress())){
@@ -187,6 +186,28 @@ public class TruckServiceImp implements TruckService {
 
         final FoodTruck updatedTruck = foodTruckRepo.save(truck);
         return mapper.foodTruckToDto(updatedTruck);
+    }
+
+    @Override
+    public void updateProfileImage(Long foodTruckId, MultipartFile file) {
+        if(file != null && !file.isEmpty()) {
+            try {
+                final FoodTruck foodTruck = foodTruckRepo.findById(foodTruckId)
+                        .orElseThrow(() -> new IllegalArgumentException("FoodTruck " + foodTruckRepo + " does not exist"));
+                final String oldImage = foodTruck.getProfileImage();
+                final String imageLocation = uploadProfileImage(file, foodTruckId);
+                foodTruck.setProfileImage(imageLocation);
+                foodTruckRepo.save(foodTruck);
+                if(oldImage != null){
+                    final Path locationPath = Paths.get(foodTruckPicturesLocation, String.valueOf(foodTruckId));
+                    final Path oldImagePath = locationPath.resolve(imageLocation.substring(imageLocation.lastIndexOf("/")));
+                    Files.deleteIfExists(oldImagePath);
+                }
+            } catch (IOException e) {
+                logger.error("Failed to update image for foodTruck {}", foodTruckId, e);
+                throw new IllegalStateException("Image upload failed");
+            }
+        }
     }
 
     @Override
@@ -248,24 +269,20 @@ public class TruckServiceImp implements TruckService {
 
     }
 
-    //Upload truck profile image
     @Override
-    public String uploadProfileImage(MultipartFile file, Long truckId) throws IOException, java.io.IOException {
+    public String uploadProfileImage(MultipartFile file, Long truckId) throws IOException {
 
-        FoodTruck truck = foodTruckRepo.findById(truckId).orElseThrow(() -> new EntityNotFoundException("Truck not found with id: " + truckId));
-
-        final Path locationPath = Paths.get(foodTruckPicturesLocation, String.valueOf(truck.getId()));
+        final Path locationPath = Paths.get(foodTruckPicturesLocation, String.valueOf(truckId));
 
         if(!Files.exists(locationPath)) {
             Files.createDirectory(locationPath);
         }
 
         try {
-            final Path location = locationPath.resolve(StringUtils.cleanPath(file.getOriginalFilename()));
+            final String imagePath = UUID.randomUUID() + StringUtils.cleanPath(file.getOriginalFilename());
+            final Path location = locationPath.resolve(imagePath);
             Files.copy(file.getInputStream(), location, StandardCopyOption.REPLACE_EXISTING);
-            truck.setProfileImage(foodTrucksStaticRessiurcesUrl + truck.getId() + "/" + StringUtils.cleanPath(file.getOriginalFilename()));
-            foodTruckRepo.save(truck);
-            return truck.getProfileImage();
+            return Paths.get(foodTruckPicturesLocation,"/", ""+truckId, "/", imagePath).toString();
         } catch (IOException e) {
             e.printStackTrace();
             throw new IOException("Image upload failed");
