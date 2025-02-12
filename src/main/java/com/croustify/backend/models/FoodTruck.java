@@ -16,7 +16,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "food_truck")
-@SQLDelete(sql = "UPDATE food_truck SET deleted_on = now() WHERE id = ?")
+@SQLDelete(sql = "UPDATE food_truck SET deleted_on = now() WHERE id_food_truck = ?")
 @SQLRestriction("deleted_on is null")
 public class FoodTruck {
 

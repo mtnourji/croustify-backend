@@ -98,7 +98,7 @@ public class FoodTruckController {
     @OwnFoodTruck
     @Secured("ROLE_FOOD_TRUCK_OWNER")
     @DeleteMapping("/foodTrucks/{foodTruckId}")
-    public ResponseEntity<Void> deleteFoodTruck(@RequestParam("foodTruckId") long foodTruckId) {
+    public ResponseEntity<Void> deleteFoodTruck(@PathVariable("foodTruckId") long foodTruckId) {
         truckService.deleteTruck(foodTruckId);
         return ResponseEntity.noContent().build();
     }
