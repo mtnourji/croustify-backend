@@ -1,6 +1,7 @@
 package com.croustify.backend.services;
 
 import com.croustify.backend.dto.FoodTruckDTO;
+import com.croustify.backend.dto.FoodTruckUpdateDTO;
 import com.croustify.backend.dto.OpenFoodTruckRequestDTO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,14 +12,14 @@ public interface TruckService {
 
     List<FoodTruckDTO> getTrucks(boolean onlyFavorites);
 
-    void deleteTruck(int id);
+    void deleteTruck(long id);
 
     FoodTruckDTO createTruck(FoodTruckDTO foodTruckDTO, Long foodTruckOwnerId, MultipartFile file) throws IOException, java.io.IOException;
 
 
     List<FoodTruckDTO> searchFoodTrucks(Boolean isOpen, List<Long> categoryIds, Boolean onlyFavorites, Double lat, Double lng, Integer radiusInKm);
 
-    FoodTruckDTO updateTruck(Long id, FoodTruckDTO foodTruckDTO);
+    FoodTruckDTO updateTruck(Long foodTruckId, FoodTruckUpdateDTO update);
     FoodTruckDTO rateTruck(Long truckId, int rating);
     void openTruck(Long truckId, OpenFoodTruckRequestDTO foodTruckDTO);
     void closeTruck(Long truckId);

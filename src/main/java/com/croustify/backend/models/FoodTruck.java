@@ -5,6 +5,8 @@ import com.croustify.backend.models.embedded.Address;
 import com.croustify.backend.models.embedded.Coordinates;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +16,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "food_truck")
-
+@SQLDelete(sql = "UPDATE food_truck SET deleted_on = now() WHERE id = ?")
+@SQLRestriction("deleted is null")
 public class FoodTruck {
 
     @Id
@@ -57,6 +60,9 @@ public class FoodTruck {
     private int ratingCount = 0;
     @Column(name = "created_date")
     private LocalDate createdDate = LocalDate.now();
+    @Column(name = "deleted_on")
+    private LocalDate deletedOn;
+
 
     //Relation ManyToOne avec FoodTruckOwner car un foodTruck appartient à un foodTruckOwner
     @ManyToOne
@@ -214,5 +220,13 @@ public class FoodTruck {
 
     public void setDefaultAddress(Address defaultAddress) {
         this.defaultAddress = defaultAddress;
+    }
+
+    public LocalDate getDeletedOn() {
+        return deletedOn;
+    }
+
+    public void setDeletedOn(LocalDate deletedOn) {
+        this.deletedOn = deletedOn;
     }
 }

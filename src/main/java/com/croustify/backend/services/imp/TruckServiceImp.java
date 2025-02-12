@@ -2,9 +2,11 @@ package com.croustify.backend.services.imp;
 
 import com.croustify.backend.connector.OpenStreetMapConnector;
 import com.croustify.backend.dto.*;
+import com.croustify.backend.mappers.AddressMapper;
 import com.croustify.backend.mappers.FoodTruckMapper;
 import com.croustify.backend.models.FoodTruck;
 import com.croustify.backend.models.FoodTruckOwner;
+import com.croustify.backend.models.embedded.Address;
 import com.croustify.backend.models.embedded.Coordinates;
 import com.croustify.backend.repositories.CategoryRepository;
 import com.croustify.backend.repositories.FoodTruckOwnerRepo;
@@ -57,6 +59,8 @@ public class TruckServiceImp implements TruckService {
 
     @Autowired
     private FoodTruckMapper mapper;
+    @Autowired
+    private AddressMapper addressMapper;
 
     @Override
     @Transactional
@@ -146,27 +150,38 @@ public class TruckServiceImp implements TruckService {
         return mapper.foodTruckToDto(all);
     }
 
-
-    //update truck
+    @Transactional
     @Override
-    public FoodTruckDTO updateTruck(Long id, FoodTruckDTO foodTruckDTO) {
-        final FoodTruck truck = getTruckById(id);
+    public FoodTruckDTO updateTruck(Long foodTruckId, FoodTruckUpdateDTO update) {
+        final FoodTruck truck = getTruckById(foodTruckId);
 
-        if (foodTruckDTO.getName() != null) {
-            truck.setName(foodTruckDTO.getName());
+        if (update.getName() != null) {
+            truck.setName(update.getName());
         }
-        if (foodTruckDTO.getDescription() != null) {
-            truck.setDescription(foodTruckDTO.getDescription());
+        if (update.getDescription() != null) {
+            truck.setDescription(update.getDescription());
         }
-        if (foodTruckDTO.getSpeciality() != null) {
-            truck.setSpeciality(foodTruckDTO.getSpeciality());
+        if (update.getSpeciality() != null) {
+            truck.setSpeciality(update.getSpeciality());
         }
         truck.getCategories().clear();
-        if(!foodTruckDTO.getCategories().isEmpty()){
-            truck.setCategories(new HashSet<>(categoryRepository.findAllById(foodTruckDTO.getCategories().stream().map(CategoryDTO::getId).toList())));
+        if(!update.getCategories().isEmpty()){
+            truck.setCategories(new HashSet<>(categoryRepository.findAllById(update.getCategories().stream().map(CategoryDTO::getId).toList())));
         }
-        if (foodTruckDTO.getProfileImage() != null) {
-            truck.setProfileImage(foodTruckDTO.getProfileImage());
+        if (update.getProfileImage() != null) {
+            truck.setProfileImage(update.getProfileImage());
+        }
+        if(update.getDefaultAddress() != null){
+            final Address address = addressMapper.dtoToAddress(update.getDefaultAddress());
+            if(!address.equals(truck.getDefaultAddress())){
+                truck.setDefaultAddress(address);
+                final LatLon latLon = openStreetMapConnector.getCoordinates(address.getPostalCode(), address.getStreet(),
+                        address.getStreetNumber(), address.getCity());
+                Coordinates coordinates = new Coordinates();
+                coordinates.setLatitude(latLon.getLat());
+                coordinates.setLongitude(latLon.getLon());
+                truck.setDefaultCoordinates(coordinates);
+            }
         }
 
         final FoodTruck updatedTruck = foodTruckRepo.save(truck);
@@ -174,8 +189,8 @@ public class TruckServiceImp implements TruckService {
     }
 
     @Override
-    public void deleteTruck(int id) {
-        foodTruckRepo.deleteById((long) id);
+    public void deleteTruck(long id) {
+        foodTruckRepo.deleteById(id);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.croustify.backend.controllers;
 
 import com.croustify.backend.dto.FoodTruckDTO;
+import com.croustify.backend.dto.FoodTruckUpdateDTO;
 import com.croustify.backend.dto.OpenFoodTruckRequestDTO;
 import com.croustify.backend.services.TruckService;
 import com.croustify.backend.validation.OwnFoodTruck;
@@ -52,8 +53,6 @@ public class FoodTruckController {
         return ResponseEntity.ok(truckService.getTrucks(onlyFavorites));
     }
 
-
-
     @GetMapping("/foodTrucks/search")
     public ResponseEntity<List<FoodTruckDTO>> searchFoodTrucks(
             @RequestParam(required = false) Boolean isOpen,
@@ -70,7 +69,7 @@ public class FoodTruckController {
     }
 
     @OwnUser
-    @PreAuthorize("hasRole('ROLE_FOOD_TRUCK_OWNER')")
+    @Secured("ROLE_FOOD_TRUCK_OWNER")
     @PostMapping(value = "/users/{userId}/foodTrucks", consumes = "multipart/form-data")
     public ResponseEntity<FoodTruckDTO> createFoodTruck(
             @PathVariable("userId") Long ownerId,
@@ -81,17 +80,19 @@ public class FoodTruckController {
         return ResponseEntity.created(URI.create("/foodTrucks/" + createdFoodTruck.getId())).build();
     }
 
-    @PutMapping(value = "/updateFoodTruck", consumes = "multipart/form-data")
-    public ResponseEntity<FoodTruckDTO> updateFoodTruck(@RequestParam("ownerId") Long id, @RequestPart("foodTruck") MultipartFile foodTruckFile) throws IOException {
-        FoodTruckDTO foodTruck = objectMapper.readValue(foodTruckFile.getInputStream(), FoodTruckDTO.class);
-        final FoodTruckDTO updatedFoodTruck = truckService.updateTruck(id, foodTruck);
-        return ResponseEntity.ok(updatedFoodTruck);
+    @OwnFoodTruck
+    @Secured("ROLE_FOOD_TRUCK_OWNER")
+    @PutMapping("/foodTrucks/{foodTruckId}")
+    public ResponseEntity<FoodTruckDTO> updateFoodTruck(@PathVariable("foodTruckId") long foodTruckId, @RequestBody FoodTruckUpdateDTO update) {
+        return ResponseEntity.ok(truckService.updateTruck(foodTruckId, update));
     }
 
 
-    @DeleteMapping("/deleteFoodTruck")
-    public ResponseEntity<Void> deleteFoodTruck(@RequestParam("foodTruckId") int id) {
-        truckService.deleteTruck(id);
+    @OwnFoodTruck
+    @Secured("ROLE_FOOD_TRUCK_OWNER")
+    @DeleteMapping("/foodTrucks/{foodTruckId}")
+    public ResponseEntity<Void> deleteFoodTruck(@RequestParam("foodTruckId") long foodTruckId) {
+        truckService.deleteTruck(foodTruckId);
         return ResponseEntity.noContent().build();
     }
 
