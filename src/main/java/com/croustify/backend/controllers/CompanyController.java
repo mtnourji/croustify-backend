@@ -2,6 +2,7 @@ package com.croustify.backend.controllers;
 
 import com.croustify.backend.dto.CompanyDTO;
 import com.croustify.backend.dto.CompanyDetailsDTO;
+import com.croustify.backend.dto.CompanyInvitationRequestDTO;
 import com.croustify.backend.dto.NewCompanyDTO;
 import com.croustify.backend.services.CompanyService;
 import com.croustify.backend.validation.OwnUser;
@@ -25,6 +26,15 @@ public class CompanyController {
         final CompanyDTO company = companyService.createCompany(newCompany);
         return ResponseEntity.created(URI.create("/companies/" + company.getId())).body(company);
     }
+
+    @Secured("ROLE_USER")
+    @PostMapping("/companies/{companyId}/invite")
+    public ResponseEntity<Void> inviteToCompany(@PathVariable("companyId") long companyId,
+                                                      @RequestBody CompanyInvitationRequestDTO request){
+        companyService.inviteToCompany(companyId, request);
+        return ResponseEntity.noContent().build();
+    }
+
     @OwnUser
     @Secured("ROLE_USER")
     @GetMapping("/users/{userId}/companies")

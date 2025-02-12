@@ -2,6 +2,7 @@ package com.croustify.backend.services.imp;
 
 import com.croustify.backend.component.JwtTokenProvider;
 import com.croustify.backend.dto.ContactDTO;
+import com.croustify.backend.models.Company;
 import com.croustify.backend.services.EmailService;
 import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
@@ -42,6 +43,12 @@ public class EmailServiceImpl implements EmailService {
 
     @Autowired
     private JavaMailSenderImpl mailSender;
+
+    @Async
+    @Override
+    public void sendCompanyInvitation(Company company, String email) {
+        // TODO send email
+    }
 
     @Async
     @Override
