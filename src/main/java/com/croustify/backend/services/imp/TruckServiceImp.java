@@ -284,7 +284,7 @@ public class TruckServiceImp implements TruckService {
             final String imagePath = UUID.randomUUID() + StringUtils.cleanPath(file.getOriginalFilename());
             final Path location = locationPath.resolve(imagePath);
             Files.copy(file.getInputStream(), location, StandardCopyOption.REPLACE_EXISTING);
-            return Paths.get(foodTruckPicturesLocation,"trucks", ""+truckId, imagePath).toString();
+            return Paths.get(backendImageBaseUrl,"trucks", ""+truckId, imagePath).toString();
         } catch (IOException e) {
             e.printStackTrace();
             throw new IOException("Image upload failed");
