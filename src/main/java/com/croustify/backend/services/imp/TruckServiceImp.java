@@ -44,6 +44,8 @@ public class TruckServiceImp implements TruckService {
     private static final int DEFAULT_RADIUS_IN_KM = 10;
     @Value("${storage.trucks-image-location}")
     private String foodTruckPicturesLocation;
+    @Value("${backend-image-base-url}")
+    private String backendImageBaseUrl;
 
     @Autowired
     private UserCredentialRepo userCredentialRepo;
@@ -199,7 +201,7 @@ public class TruckServiceImp implements TruckService {
                 foodTruck.setProfileImage(imageLocation);
                 foodTruckRepo.save(foodTruck);
                 if(oldImage != null){
-                    final Path locationPath = Paths.get(foodTruckPicturesLocation, String.valueOf(foodTruckId));
+                    final Path locationPath = Paths.get(foodTruckPicturesLocation, "trucks", String.valueOf(foodTruckId));
                     final Path oldImagePath = locationPath.resolve(imageLocation.substring(imageLocation.lastIndexOf("/")));
                     Files.deleteIfExists(oldImagePath);
                 }
@@ -272,7 +274,7 @@ public class TruckServiceImp implements TruckService {
     @Override
     public String uploadProfileImage(MultipartFile file, Long truckId) throws IOException {
 
-        final Path locationPath = Paths.get(foodTruckPicturesLocation, String.valueOf(truckId));
+        final Path locationPath = Paths.get(foodTruckPicturesLocation, "trucks", String.valueOf(truckId));
 
         if(!Files.exists(locationPath)) {
             Files.createDirectory(locationPath);
@@ -282,7 +284,7 @@ public class TruckServiceImp implements TruckService {
             final String imagePath = UUID.randomUUID() + StringUtils.cleanPath(file.getOriginalFilename());
             final Path location = locationPath.resolve(imagePath);
             Files.copy(file.getInputStream(), location, StandardCopyOption.REPLACE_EXISTING);
-            return Paths.get(foodTruckPicturesLocation,"/", ""+truckId, "/", imagePath).toString();
+            return Paths.get(foodTruckPicturesLocation,"trucks", ""+truckId, imagePath).toString();
         } catch (IOException e) {
             e.printStackTrace();
             throw new IOException("Image upload failed");

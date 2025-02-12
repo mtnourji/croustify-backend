@@ -58,6 +58,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/items/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/isFoodTruckOpen").permitAll()
                         .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/public-resources/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/foodTruckByFoodType").permitAll()
                         .requestMatchers(HttpMethod.GET, "/searchFoodTrucks").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/*/subscription/confirm").permitAll()

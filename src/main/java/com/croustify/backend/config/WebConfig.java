@@ -15,6 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Value("${storage.trucks-image-location}")
     private String foodTruckPicturesLocation;
+    @Value("${backend-image-base-url}")
+    private String baseImageUrl;
 
     @Autowired
     private FoodTruckRepo foodTruckRepo;
@@ -23,8 +25,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         String location = "file:///" + (foodTruckPicturesLocation.endsWith("/") ? foodTruckPicturesLocation : foodTruckPicturesLocation + "/");
         registry
-                .addResourceHandler("/public-resources/agencies/**")
-                .addResourceLocations(location + "agencies/");
+                .addResourceHandler("/public-resources/images/**")
+                .addResourceLocations(location);
     }
 
     @Override

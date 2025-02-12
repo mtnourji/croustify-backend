@@ -37,8 +37,11 @@ spring:
             enable: true
           ssl:
             trust: "*"
+
+
+backend-image-base-url: "http://localhost:8686/api/public-resources/images"
 static-resources-url: "http://10.0.2.2:8686/images"
 storage:
-  trucks-image-location: C:\dev\croustify\images\trucks
+  trucks-image-location: C:\dev\croustify\images
 recaptcha:
   secret-key: "6Lfp22gqAAAAAAAlIY9TgPEhr15d-RehL6tRTQFS"
