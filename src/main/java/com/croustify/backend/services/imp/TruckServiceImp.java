@@ -202,8 +202,11 @@ public class TruckServiceImp implements TruckService {
                 foodTruckRepo.save(foodTruck);
                 if(oldImage != null){
                     final Path locationPath = Paths.get(foodTruckPicturesLocation, "trucks", String.valueOf(foodTruckId));
-                    final Path oldImagePath = locationPath.resolve(imageLocation.substring(imageLocation.lastIndexOf("/")));
-                    Files.deleteIfExists(oldImagePath);
+                    final Path oldImagePath = locationPath.resolve(oldImage.substring(oldImage.lastIndexOf("/")+1));
+                    final boolean isDeleted = Files.deleteIfExists(oldImagePath);
+                    if(!isDeleted) {
+                        logger.warn("Old image {} of truck {} is NOT DELETED", oldImagePath, foodTruckId);
+                    }
                 }
             } catch (IOException e) {
                 logger.error("Failed to update image for foodTruck {}", foodTruckId, e);
@@ -284,7 +287,7 @@ public class TruckServiceImp implements TruckService {
             final String imagePath = UUID.randomUUID() + StringUtils.cleanPath(file.getOriginalFilename());
             final Path location = locationPath.resolve(imagePath);
             Files.copy(file.getInputStream(), location, StandardCopyOption.REPLACE_EXISTING);
-            return Paths.get(backendImageBaseUrl,"trucks", ""+truckId, imagePath).toString();
+            return backendImageBaseUrl + "/trucks/"+truckId + "/" + imagePath;
         } catch (IOException e) {
             e.printStackTrace();
             throw new IOException("Image upload failed");
