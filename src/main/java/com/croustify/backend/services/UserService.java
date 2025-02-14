@@ -1,6 +1,7 @@
 package com.croustify.backend.services;
 
 import com.croustify.backend.bean.UserRole;
+import com.croustify.backend.dto.UpdateProfileDTO;
 import com.croustify.backend.dto.UserCredentialDTO;
 import com.croustify.backend.dto.UserDTO;
 import com.croustify.backend.dto.UserLoginDTO;
@@ -21,4 +22,8 @@ public interface UserService {
     void deleteAccount(Long userCredentialId);
 
     List<UserDTO> findUsers(UserRole userType, String email, String firstName, String lastName, Boolean enabled);
+
+    UserDTO getProfile();
+
+    void updateProfile(UpdateProfileDTO updateProfile);
 }

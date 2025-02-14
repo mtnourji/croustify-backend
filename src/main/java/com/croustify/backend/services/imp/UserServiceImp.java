@@ -2,20 +2,17 @@ package com.croustify.backend.services.imp;
 
 import com.croustify.backend.bean.UserRole;
 import com.croustify.backend.component.JwtTokenProvider;
+import com.croustify.backend.dto.UpdateProfileDTO;
 import com.croustify.backend.dto.UserCredentialDTO;
 import com.croustify.backend.dto.UserDTO;
 import com.croustify.backend.dto.UserLoginDTO;
+import com.croustify.backend.mappers.AddressMapper;
 import com.croustify.backend.mappers.UserCredentialMapper;
-import com.croustify.backend.models.PasswordResetToken;
-import com.croustify.backend.models.Role;
-import com.croustify.backend.models.User;
-import com.croustify.backend.models.UserCredential;
-import com.croustify.backend.repositories.PasswordResetTokenRepository;
-import com.croustify.backend.repositories.RoleRepo;
-import com.croustify.backend.repositories.UserCredentialRepo;
-import com.croustify.backend.repositories.UserRepository;
+import com.croustify.backend.models.*;
+import com.croustify.backend.repositories.*;
 import com.croustify.backend.services.UserService;
 import com.croustify.backend.specifications.UserSpecifications;
+import com.croustify.backend.util.SecurityUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.slf4j.Logger;
@@ -44,7 +41,8 @@ public class UserServiceImp implements UserService {
     private UserRepository userRepository;
     @Autowired
     private UserCredentialMapper mapperUser;
-
+    @Autowired
+    private AddressMapper addressMapper;
     @Autowired
     private RoleRepo roleRepo;
     @Autowired
@@ -55,6 +53,10 @@ public class UserServiceImp implements UserService {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private CustomerRepo customerRepo;
+    @Autowired
+    private FoodTruckOwnerRepo foodTruckOwnerRepo;
 
 
     public UserServiceImp(PasswordEncoder passwordEncoder) {
@@ -175,5 +177,36 @@ public class UserServiceImp implements UserService {
         spec = spec.and(UserSpecifications.isEnabled(enabled));
         List<User> users = userRepository.findAll(spec);
         return mapperUser.rawUserToDto(users);
+    }
+
+    @Override
+    public UserDTO getProfile() {
+        final User user = userRepository.findByUserCredentialId(SecurityUtil.getConnectedUserOrThrow().getId())
+                        .orElseThrow(() -> new IllegalArgumentException("User does not exist with id " + SecurityUtil.getConnectedUserOrThrow().getId()));
+        return mapperUser.rawUserToDto(user);
+    }
+
+    @Transactional
+    @Override
+    public void updateProfile(UpdateProfileDTO updateProfile) {
+        final User user = userRepository.findByUserCredentialId(SecurityUtil.getConnectedUserOrThrow().getId())
+                .orElseThrow(() -> new IllegalArgumentException("User does not exist with id " + SecurityUtil.getConnectedUserOrThrow().getId()));
+        if(user instanceof FoodTruckOwner){
+            final FoodTruckOwner foodTruckOwner = foodTruckOwnerRepo.findById(user.getId()).orElseThrow();
+            foodTruckOwner.setAddress(addressMapper.dtoToAddress(updateProfile.getAddress()));
+            foodTruckOwner.setFirstname(updateProfile.getFirstname());
+            foodTruckOwner.setLastname(updateProfile.getLastname());
+            foodTruckOwner.setPhoneNumber(updateProfile.getPhoneNumber());
+            foodTruckOwnerRepo.save(foodTruckOwner);
+        } else if(user instanceof Customer){
+            final Customer customer = customerRepo.findById(user.getId()).orElseThrow();
+            customer.setAddress(addressMapper.dtoToAddress(updateProfile.getAddress()));
+            customer.setFirstname(updateProfile.getFirstname());
+            customer.setLastname(updateProfile.getLastname());
+            customer.setPhoneNumber(updateProfile.getPhoneNumber());
+            customerRepo.save(customer);
+        } else {
+            throw new UnsupportedOperationException(user.getClass() + " is not supported");
+        }
     }
 }

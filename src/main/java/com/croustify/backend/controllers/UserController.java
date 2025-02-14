@@ -27,7 +27,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/profile")
+    public ResponseEntity<UserDTO> getProfile(){
+        return ResponseEntity.ok(userService.getProfile());
+    }
 
+    @PutMapping("/profile")
+    public ResponseEntity<Void> updateProfile(@RequestBody UpdateProfileDTO updateProfile){
+        userService.updateProfile(updateProfile);
+        return ResponseEntity.noContent().build();
+    }
     @PostMapping("/register")
     ResponseEntity<Void> registerUser(@RequestBody @Validated UserLoginDTO userCredentialDTO) {
         logger.info("Registering User: {}", userCredentialDTO.getEmail());
