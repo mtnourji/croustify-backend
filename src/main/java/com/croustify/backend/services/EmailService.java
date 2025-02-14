@@ -7,4 +7,6 @@ public interface EmailService {
     void sendEmailNotificationContact(ContactDTO contactDTO);
 
     void sendCompanyInvitation(Company company, String email);
+
+    void sendPasswordResetToken(String email, String token);
 }
