@@ -71,6 +71,10 @@ public class EmailServiceImpl implements EmailService {
             String htmlContent = templateEngine.process("passwordReset", context);
             helper.setText(htmlContent, true);
             helper.addInline("logo", new ClassPathResource("static/images/logo_croustify.png"));
+            helper.addInline("logoGrey", new ClassPathResource("static/images/LogoGrey.png"));
+            helper.addInline("Facebook", new ClassPathResource("static/images/Facebook.png"));
+            helper.addInline("Instagram", new ClassPathResource("static/images/Instagram.png"));
+            helper.addInline("tiktok", new ClassPathResource("static/images/tiktok.png"));
             mimeMessage.setFrom(fromEmail);
             javaMailSender.send(mimeMessage);
             logger.info("Email sent for email {} " , email);
