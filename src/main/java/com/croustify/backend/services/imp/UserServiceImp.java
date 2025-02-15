@@ -121,6 +121,7 @@ public class UserServiceImp implements UserService {
         owner.setEnabled(true);
         tokenRepository.save(resetToken);
         userCredentialRepo.save(owner);
+
     }
 
     @Override

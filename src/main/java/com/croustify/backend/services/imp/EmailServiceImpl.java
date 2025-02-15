@@ -52,6 +52,35 @@ public class EmailServiceImpl implements EmailService {
 
     @Async
     @Override
+    public void sendPasswordResetToken(String email, String token) {
+        final Context context = new Context();
+
+        String url = "http://localhost:4200/reset-password?token=" + token;
+
+        context.setVariable("url", url);
+        context.setVariable("email", email);
+
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true, "utf-8");
+            helper.setTo(email);
+            helper.setSubject("Password Reset");
+            String htmlContent = templateEngine.process("passwordReset", context);
+            helper.setText(htmlContent, true);
+            helper.addInline("logo", new ClassPathResource("static/images/logo_croustify.png"));
+            mimeMessage.setFrom(fromEmail);
+            javaMailSender.send(mimeMessage);
+            logger.info("Email sent for email {} " , email);
+        } catch (Exception e) {
+            logger.error("Error sending email for email {} ", email,e);
+        }
+    }
+
+    @Async
+    @Override
     public void sendEmailNotificationContact(ContactDTO contactDTO) {
 
         final Context context = new Context();
@@ -105,5 +134,8 @@ public class EmailServiceImpl implements EmailService {
             logger.error("Error sending email notification for email {} ", contactDTO.getEmail(),e);
         }
     }
+
+
+
 
 }

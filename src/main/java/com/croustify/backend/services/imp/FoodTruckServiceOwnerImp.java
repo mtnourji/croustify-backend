@@ -82,7 +82,7 @@ public class FoodTruckServiceOwnerImp implements FoodTruckOwnerService {
         token.setExpirationDate(LocalDateTime.now().plusHours(48));
         token.setMaxClicks(2);
         tokenRepository.save(token);
-        // TODO SEND MAIL sendResetLink(foodTruckOwner.getEmail(), token.getToken());
+        emailService.sendPasswordResetToken(userCredential.getEmail(), token.getToken());
     }
 
     @Override
