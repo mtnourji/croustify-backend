@@ -2,6 +2,7 @@ package com.croustify.backend.services.imp;
 
 import com.croustify.backend.component.JwtTokenProvider;
 import com.croustify.backend.dto.ContactDTO;
+import com.croustify.backend.dto.NewFoodTruckOwnerDTO;
 import com.croustify.backend.models.Company;
 import com.croustify.backend.services.EmailService;
 import jakarta.mail.internet.MimeMessage;
@@ -69,6 +70,33 @@ public class EmailServiceImpl implements EmailService {
             helper.setTo(email);
             helper.setSubject("Password Reset");
             String htmlContent = templateEngine.process("passwordReset", context);
+            helper.setText(htmlContent, true);
+            helper.addInline("logo", new ClassPathResource("static/images/logo_croustify.png"));
+            helper.addInline("logoGrey", new ClassPathResource("static/images/LogoGrey.png"));
+            helper.addInline("Facebook", new ClassPathResource("static/images/Facebook.png"));
+            helper.addInline("Instagram", new ClassPathResource("static/images/Instagram.png"));
+            helper.addInline("tiktok", new ClassPathResource("static/images/tiktok.png"));
+            mimeMessage.setFrom(fromEmail);
+            javaMailSender.send(mimeMessage);
+            logger.info("Email sent for email {} " , email);
+        } catch (Exception e) {
+            logger.error("Error sending email for email {} ", email,e);
+        }
+    }
+
+    @Override
+    public void sendEmailConfirmationFoodTruckOwner(String email) {
+        final Context context = new Context();
+
+        context.setVariable("email", email);
+
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage,true, "utf-8");
+            helper.setTo(email);
+            helper.setSubject("Confirmation Email Food Truck Owner");
+            String htmlContent = templateEngine.process("confirmationEmailFoodTruckOwner", context);
             helper.setText(htmlContent, true);
             helper.addInline("logo", new ClassPathResource("static/images/logo_croustify.png"));
             helper.addInline("logoGrey", new ClassPathResource("static/images/LogoGrey.png"));

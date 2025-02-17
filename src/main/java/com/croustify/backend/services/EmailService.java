@@ -1,6 +1,7 @@
 package com.croustify.backend.services;
 
 import com.croustify.backend.dto.ContactDTO;
+import com.croustify.backend.dto.NewFoodTruckOwnerDTO;
 import com.croustify.backend.models.Company;
 
 public interface EmailService {
@@ -9,4 +10,6 @@ public interface EmailService {
     void sendCompanyInvitation(Company company, String email);
 
     void sendPasswordResetToken(String email, String token);
+
+    void sendEmailConfirmationFoodTruckOwner(String email);
 }
