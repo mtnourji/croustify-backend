@@ -10,6 +10,7 @@ import com.croustify.backend.mappers.AddressMapper;
 import com.croustify.backend.mappers.UserCredentialMapper;
 import com.croustify.backend.models.*;
 import com.croustify.backend.repositories.*;
+import com.croustify.backend.services.EmailService;
 import com.croustify.backend.services.UserService;
 import com.croustify.backend.specifications.UserSpecifications;
 import com.croustify.backend.util.SecurityUtil;
@@ -57,6 +58,8 @@ public class UserServiceImp implements UserService {
     private CustomerRepo customerRepo;
     @Autowired
     private FoodTruckOwnerRepo foodTruckOwnerRepo;
+    @Autowired
+    private EmailService emailService;
 
 
     public UserServiceImp(PasswordEncoder passwordEncoder) {
@@ -121,7 +124,7 @@ public class UserServiceImp implements UserService {
         owner.setEnabled(true);
         tokenRepository.save(resetToken);
         userCredentialRepo.save(owner);
-
+        emailService.sendEmailConfirmationFoodTruckOwner(owner.getEmail());
     }
 
     @Override
